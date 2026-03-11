@@ -1,0 +1,337 @@
+name: CFoundationMacX
+options:
+  bundleIdPrefix: com.cfoundation
+  deploymentTarget:
+    macOS: "14.0"
+  xcodeVersion: "16.0"
+  generateEmptyDirectories: true
+  postGenCommand: echo "✓ CFoundationMacX.xcodeproj generated"
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    CLANG_ENABLE_OBJC_ARC: YES
+    ENABLE_HARDENED_RUNTIME: YES
+    DEAD_CODE_STRIPPING: YES
+    ALWAYS_SEARCH_USER_PATHS: NO
+    CLANG_CXX_LANGUAGE_STANDARD: gnu++17
+    GCC_C_LANGUAGE_STANDARD: gnu11
+
+    # Header search paths — VICE core + our app layer
+    HEADER_SEARCH_PATHS: >-
+      $(SRCROOT)/apps/cfoundation-app
+      $(SRCROOT)/vice/vice-3.9/src
+      $(SRCROOT)/vice/vice-3.9/src/c64
+      $(SRCROOT)/vice/vice-3.9/src/c64/cart
+      $(SRCROOT)/vice/vice-3.9/src/vicii
+      $(SRCROOT)/vice/vice-3.9/src/sid
+      $(SRCROOT)/vice/vice-3.9/src/drive
+      $(SRCROOT)/vice/vice-3.9/src/iecbus
+      $(SRCROOT)/vice/vice-3.9/src/video
+      $(SRCROOT)/vice/vice-3.9/src/core
+      $(SRCROOT)/vice/vice-3.9/src/core/rtc
+      $(SRCROOT)/vice/vice-3.9/src/raster
+      $(SRCROOT)/vice/vice-3.9/src/serial
+      $(SRCROOT)/vice/vice-3.9/src/tape
+      $(SRCROOT)/vice/vice-3.9/src/cartridge
+      $(SRCROOT)/vice/vice-3.9/src/joyport
+      $(SRCROOT)/vice/vice-3.9/src/monitor
+      $(SRCROOT)/vice/vice-3.9/src/arch/shared
+      $(SRCROOT)/vice/vice-3.9/src/arch/headless
+      $(SRCROOT)/vice/vice-3.9/src/resid
+
+    # Minimal preprocessor defines — core VICE config lives in vice_config.h
+    # NOTE: VERSION and PACKAGE_VERSION intentionally NOT here (IOKit struct member conflict)
+    # HAVE_CONFIG_H tells VICE source files to #include "config.h" (our vice_config.h symlink)
+    GCC_PREPROCESSOR_DEFINITIONS: >-
+      MACOSX=1
+      UNIX_COMPILE=1
+      USE_VICE_THREAD=1
+      VICE_ARCHTYPE_NATIVE_MACOS=1
+      HAVE_AUDIO_UNIT=1
+      HAVE_CONFIG_H=1
+
+    # Suppress VICE core warnings we don't own
+    # C/ObjC files: VICE C source uses HAVE_CONFIG_H=1 to self-include config.h.
+    # Do NOT add -include here — it would poison IOKit Clang module compilation
+    # (VERSION "3.9" conflicts with UInt8 VERSION in SCSICmds_INQUIRY_Definitions.h).
+    OTHER_CFLAGS: >-
+      -Wno-unused-parameter
+      -Wno-sign-compare
+      -Wno-missing-field-initializers
+      -Wno-deprecated-declarations
+      -Wno-implicit-function-declaration
+
+    # C++ files (resid/*.cc): force-include config.h so VERSION is defined.
+    # These files don't include system frameworks, so no IOKit conflict.
+    OTHER_CPLUSPLUSFLAGS: >-
+      -include $(SRCROOT)/apps/cfoundation-app/config.h
+      -Wno-unused-parameter
+      -Wno-sign-compare
+      -Wno-deprecated-declarations
+
+targets:
+  CFoundationMacX:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+
+    info:
+      path: apps/cfoundation-app/Info.plist
+      properties:
+        CFBundleName: "c=foundation"
+        CFBundleDisplayName: "c=foundation"
+        CFBundleIdentifier: com.cfoundation.CFoundationMacX
+        CFBundleVersion: "1"
+        CFBundleShortVersionString: "0.1.0"
+        CFBundlePackageType: APPL
+        CFBundleExecutable: "$(EXECUTABLE_NAME)"
+        NSPrincipalClass: NSApplication
+        NSMainNibFile: ""
+        NSHighResolutionCapable: true
+        NSSupportsAutomaticGraphicsSwitching: true
+        LSApplicationCategoryType: public.app-category.games
+        NSHumanReadableCopyright: "© 2026 David Whittington. VICE © VICE Team (GPL v2)"
+
+    entitlements:
+      path: apps/cfoundation-app/CFoundationMacX.entitlements
+
+    sources:
+      # Our macOS app layer
+      - path: apps/cfoundation-app
+        excludes:
+          - "*.plist"
+          - "*.entitlements"
+          - "Resources/**"
+
+      # VICE core C files — explicitly listed directories, source files only
+      # Root level C files
+      - path: vice/vice-3.9/src
+        includes:
+          - "*.c"
+        excludes:
+          - "main.c"  # we have our own main.c
+        createIntermediateGroups: false
+
+      # C64 machine
+      - path: vice/vice-3.9/src/c64
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # C64 cartridge support
+      - path: vice/vice-3.9/src/c64/cart
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Video subsystem
+      - path: vice/vice-3.9/src/video
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # VIC-II chip
+      - path: vice/vice-3.9/src/vicii
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Raster engine
+      - path: vice/vice-3.9/src/raster
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # SID chip (C + C++ for reSID)
+      - path: vice/vice-3.9/src/sid
+        includes:
+          - "*.c"
+          - "*.cc"
+        createIntermediateGroups: false
+
+      # reSID C++ engine
+      - path: vice/vice-3.9/src/resid
+        includes:
+          - "*.cc"
+        createIntermediateGroups: false
+
+      # Drive emulation
+      - path: vice/vice-3.9/src/drive
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # IEC bus
+      - path: vice/vice-3.9/src/iecbus
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Serial layer
+      - path: vice/vice-3.9/src/serial
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Tape
+      - path: vice/vice-3.9/src/tape
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Tape port devices
+      - path: vice/vice-3.9/src/tapeport
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Joyport
+      - path: vice/vice-3.9/src/joyport
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Core utilities
+      - path: vice/vice-3.9/src/core
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # RTC chips (DS1216E, DS1307, etc.)
+      - path: vice/vice-3.9/src/core/rtc
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Disk image handling
+      - path: vice/vice-3.9/src/diskimage
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Virtual drive
+      - path: vice/vice-3.9/src/vdrive
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Datasette
+      - path: vice/vice-3.9/src/datasette
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Image contents
+      - path: vice/vice-3.9/src/imagecontents
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # File I/O
+      - path: vice/vice-3.9/src/fileio
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Parallel
+      - path: vice/vice-3.9/src/parallel
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Userport
+      - path: vice/vice-3.9/src/userport
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # RS-232
+      - path: vice/vice-3.9/src/rs232drv
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Monitor (debugger)
+      - path: vice/vice-3.9/src/monitor
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # VIC-II (SuperCPU variant)
+      - path: vice/vice-3.9/src/viciisc
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # VDC (C128 video)
+      - path: vice/vice-3.9/src/vdc
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Printer
+      - path: vice/vice-3.9/src/printerdrv
+        includes:
+          - "*.c"
+        excludes:
+          - "output-graphics.c"
+        createIntermediateGroups: false
+
+      # VICE arch/shared — macOS-compatible files only
+      - path: vice/vice-3.9/src/arch/shared
+        includes:
+          - "*.c"
+          - "*.m"
+        excludes:
+          - "sounddrv/soundalsa.c"
+          - "sounddrv/soundbeos.cc"
+          - "sounddrv/soundbsp.cc"
+          - "sounddrv/sounddx.c"
+          - "sounddrv/soundpulse.c"
+          - "sounddrv/soundsdl.c"
+          - "sounddrv/soundsun.c"
+          - "sounddrv/soundwmm.c"
+          - "sounddrv/soundflac.c"
+          - "sounddrv/soundvorbis.c"
+          - "sounddrv/soundmp3.c"
+          - "sounddrv/soundmovie.c"
+          - "sounddrv/lamelib.c"
+        createIntermediateGroups: false
+
+    settings:
+      base:
+        PRODUCT_NAME: CFoundationMacX
+        SWIFT_OBJC_BRIDGING_HEADER: apps/cfoundation-app/CFoundationMacX-Bridging-Header.h
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: ""  # set to your Team ID
+
+    dependencies:
+      - sdk: MetalKit.framework
+      - sdk: Metal.framework
+      - sdk: GameController.framework
+      - sdk: AVFoundation.framework
+      - sdk: CoreAudio.framework
+      - sdk: AudioUnit.framework
+      - sdk: AudioToolbox.framework
+      - sdk: CoreVideo.framework
+      - sdk: AppKit.framework
+      - sdk: Foundation.framework
+
+schemes:
+  CFoundationMacX:
+    build:
+      targets:
+        CFoundationMacX: all
+    run:
+      config: Debug
+      executable: CFoundationMacX
+    test:
+      config: Debug
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release
