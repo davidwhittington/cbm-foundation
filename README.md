@@ -2,8 +2,6 @@
 
 A native macOS Commodore emulator — Metal rendering, SwiftUI panels, and network hardware integration built on [VICE 3.9](https://vice-emu.sourceforge.io/) (GPLv2).
 
-Modeled on the fuji-foundation / Atari800MacX pattern.
-
 ## Current Status
 
 **Phase 8 complete.** Core emulation, Metal rendering, audio, keyboard/joystick input, multi-machine builds, net2iec network drives, and physical drive access via opencbm are all implemented and building. The app runs the VICE C64 emulation core natively on macOS 14+ (Apple Silicon and Intel).
@@ -83,17 +81,6 @@ C   (VICE 3.9 core — unmodified)
 ```
 
 See [`docs/MODERNIZATION_BLUEPRINT.md`](docs/MODERNIZATION_BLUEPRINT.md) for the full phase-by-phase plan.
-
-## The CBM Suite
-
-cbm-foundation is the base app in a planned four-app suite:
-
-| App | Platform | Scope |
-|-----|----------|-------|
-| **cbm-foundation** | macOS 14+ | Full feature set — all machines, all add-ons |
-| **cbm-swift** | macOS 14+ | C64-only, lightweight SwiftUI frontend |
-| **cbm-vision** | visionOS 2+ | Spatial — 3D bezel, mixed reality retro computing |
-| **cbm-dynasty** | macOS 14+ | Everything — net2iec, physical drives, all machines |
 
 ## Related Repos
 
