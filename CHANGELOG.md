@@ -7,6 +7,58 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added — Phase 9: dynamic VICE library + in-app download (2026-03-18)
+
+**Goal:** Decouple the VICE emulation core from the app binary. `libvice.dylib` is
+built separately, published to GitHub Releases, and downloaded automatically on first
+launch. Users and developers can override the source URL for custom builds.
+
+**Architecture:**
+
+- `libvice.dylib` loaded at runtime via `dlopen(RTLD_LAZY | RTLD_GLOBAL)`. The
+  `RTLD_GLOBAL` flag makes all VICE symbols available to the arch layer without any
+  change to the existing C call sites.
+
+- `VICEEngine.m` — new `+loadVICELibrary:error:` class method. Searches Application
+  Support first, then the app bundle. Returns an `NSError` if not found, triggering
+  the setup UI.
+
+- `CBMLibraryManager.swift` — `@Observable` download manager. Tracks install state,
+  fetches GitHub Releases API for latest tag, downloads via `URLSession` with progress,
+  verifies SHA256, installs to `~/Library/Application Support/cbm-foundation/`.
+  Supports three URL override mechanisms (env var, file, default GitHub).
+
+- `CBMSetupView.swift` — SwiftUI first-run sheet. States: not installed, update
+  available, downloading (progress bar), installed (auto-dismiss), error (retry/quit).
+  Shown as a modal window before VICE starts.
+
+- `AppDelegate.m` — `applicationDidFinishLaunching:` now calls `loadVICELibrary:`
+  first. On failure, presents setup sheet. On success, proceeds to `startVICEOrQuit`.
+
+**Build system:**
+
+- `project.yml` — removed all VICE source file entries (~350 lines). VICE source tree
+  is present as headers-only reference. Added `OTHER_LDFLAGS: -undefined dynamic_lookup`.
+  Added preBuildScript warning when `dist/libvice.dylib` is absent.
+
+- `vice/` — converted from local broken symlink to proper git submodule pointing at
+  `davidwhittington/vice-emu-code`.
+
+- `scripts/build_vice_dylib.sh` — new script. Compiles VICE from the submodule into a
+  universal `dist/libvice.dylib` (arm64 + x86_64). Respects `VICE_SRC` override.
+  Outputs checksum and version files alongside the dylib.
+
+- `.github/workflows/build-vice-lib.yml` — CI workflow. Triggers on submodule pointer
+  change or build script change. Builds universal dylib, publishes to GitHub Releases
+  tagged by VICE commit hash. Idempotent (skips if release exists). Re-tags `latest-vice`.
+
+**Documentation:**
+
+- `docs/DYNAMIC_VICE_DESIGN.md` — full design spec: architecture diagram, component
+  descriptions, URL override guide, developer quickstart, trade-offs.
+
+---
+
 ### Added — Phase 8: physical drive via opencbm (ZoomFloppy / XUM1541)
 
 **Goal:** Enable real 1541/1571/1581 drives connected via USB adapters (ZoomFloppy,

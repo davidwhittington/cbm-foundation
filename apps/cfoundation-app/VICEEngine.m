@@ -6,6 +6,7 @@
 #import "VICEEngine.h"
 #import "Net2IECManager.h"
 #import "PhysDrvManager.h"
+#import <dlfcn.h>
 
 // VICE C headers
 #include "main.h"
@@ -48,6 +49,34 @@
         case (1 << 8): return VICEMachineModelC64SC;
         default:       return VICEMachineModelC64;
     }
+}
+
+// MARK: - Library loading
+
++ (BOOL)loadVICELibrary:(NSError **)error {
+    // Resolve the library path: Application Support first, then app bundle fallback.
+    NSArray<NSString *> *candidates = @[
+        [NSString stringWithFormat:@"%@/cbm-foundation/libvice.dylib",
+            NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
+                                               NSUserDomainMask, YES).firstObject],
+        [[NSBundle mainBundle] pathForResource:@"libvice" ofType:@"dylib"],
+    ];
+
+    for (NSString *path in candidates) {
+        if (!path || ![[NSFileManager defaultManager] fileExistsAtPath:path]) continue;
+        void *handle = dlopen(path.UTF8String, RTLD_LAZY | RTLD_GLOBAL);
+        if (handle) return YES;
+        NSLog(@"VICEEngine: dlopen failed for %@: %s", path, dlerror());
+    }
+
+    if (error) {
+        *error = [NSError errorWithDomain:@"VICEEngineErrorDomain"
+                                     code:-1
+                                 userInfo:@{NSLocalizedDescriptionKey:
+                                                @"VICE core library (libvice.dylib) not found. "
+                                                @"Use the in-app setup to download it."}];
+    }
+    return NO;
 }
 
 // MARK: - Lifecycle

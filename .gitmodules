@@ -1,0 +1,3 @@
+[submodule "vice"]
+	path = vice
+	url = git@github.com:davidwhittington/vice-emu-code.git

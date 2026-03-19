@@ -108,6 +108,14 @@ final class SwiftUIPanelCoordinator: NSObject {
         mediaManagerWindow?.makeKeyAndOrderFront(nil)
     }
 
+    // MARK: - Setup (first-run / library download)
+
+    /// Returns an NSViewController hosting CBMSetupView.
+    /// AppDelegate presents this as a modal window when libvice.dylib is missing.
+    @objc static func setupViewController() -> NSViewController {
+        NSHostingController(rootView: CBMSetupView())
+    }
+
     // MARK: - About Box
 
     @objc func showAboutBox() {

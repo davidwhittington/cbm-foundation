@@ -3,5 +3,6 @@
 node_modules/
 dist/
 .env
-vice/
+vice/vice-3.9/build/
+dist/libvice.dylib
 docs/

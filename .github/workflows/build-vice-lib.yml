@@ -1,0 +1,103 @@
+name: Build libvice.dylib
+
+on:
+  push:
+    paths:
+      - 'vice'              # submodule pointer changed
+      - 'scripts/build_vice_dylib.sh'
+  workflow_dispatch:        # manual trigger from GitHub UI
+
+jobs:
+  build:
+    runs-on: macos-14       # Apple Silicon (arm64) runner
+
+    steps:
+      - name: Checkout with submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Get VICE commit hash
+        id: vice_version
+        run: |
+          VICE_COMMIT=$(cd vice && git rev-parse --short HEAD)
+          echo "commit=$VICE_COMMIT" >> "$GITHUB_OUTPUT"
+          echo "tag=vice-$VICE_COMMIT" >> "$GITHUB_OUTPUT"
+
+      - name: Check if release already exists
+        id: check_release
+        run: |
+          TAG="vice-${{ steps.vice_version.outputs.commit }}"
+          if gh release view "$TAG" &>/dev/null; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install build dependencies
+        if: steps.check_release.outputs.exists == 'false'
+        run: |
+          brew install xcodegen || true
+
+      - name: Build libvice.dylib
+        if: steps.check_release.outputs.exists == 'false'
+        run: |
+          chmod +x scripts/build_vice_dylib.sh
+          scripts/build_vice_dylib.sh
+
+      - name: Verify output
+        if: steps.check_release.outputs.exists == 'false'
+        run: |
+          test -f dist/libvice.dylib
+          file dist/libvice.dylib
+          lipo -info dist/libvice.dylib
+          cat dist/libvice.dylib.sha256
+
+      - name: Create GitHub Release
+        if: steps.check_release.outputs.exists == 'false'
+        run: |
+          TAG="${{ steps.vice_version.outputs.tag }}"
+          VICE_COMMIT="${{ steps.vice_version.outputs.commit }}"
+          SHA256=$(cat dist/libvice.dylib.sha256)
+
+          gh release create "$TAG" \
+            --title "VICE core $VICE_COMMIT" \
+            --notes "$(cat <<EOF
+          ## libvice.dylib — VICE $VICE_COMMIT
+
+          Universal macOS binary (arm64 + x86_64), macOS 14+ deployment target.
+
+          **SHA256:** \`$SHA256\`
+
+          Built from [vice-emu-code](https://github.com/davidwhittington/vice-emu-code) @ \`$VICE_COMMIT\`
+
+          ### Install manually
+          \`\`\`bash
+          mkdir -p ~/Library/Application\ Support/cbm-foundation
+          curl -L https://github.com/davidwhittington/cbm-foundation/releases/download/$TAG/libvice.dylib \
+               -o ~/Library/Application\ Support/cbm-foundation/libvice.dylib
+          echo "$VICE_COMMIT" > ~/Library/Application\ Support/cbm-foundation/libvice-version.txt
+          \`\`\`
+
+          ### Use a custom build
+          Set \`CBM_VICE_URL\` in the environment or place a URL in:
+          \`~/Library/Application Support/cbm-foundation/vice-source.url\`
+          EOF
+          )" \
+            dist/libvice.dylib \
+            dist/libvice.dylib.sha256 \
+            dist/libvice-version.txt
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update 'latest' release pointer
+        if: steps.check_release.outputs.exists == 'false'
+        run: |
+          # Re-tag 'latest-vice' to point at the newest build
+          git tag -f latest-vice
+          git push origin -f latest-vice
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

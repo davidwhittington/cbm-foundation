@@ -19,6 +19,19 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
     [self buildMenuBar];
 
+    // Check for libvice.dylib. If missing, show the SwiftUI setup sheet first.
+    NSError *libError = nil;
+    if (![VICEEngine loadVICELibrary:&libError]) {
+        [self showSetupSheetWithCompletion:^{
+            [self startVICEOrQuit];
+        }];
+        return;
+    }
+
+    [self startVICEOrQuit];
+}
+
+- (void)startVICEOrQuit {
     NSError *error = nil;
     BOOL ok = [[VICEEngine sharedEngine] startWithMachine:VICEMachineModelC64 error:&error];
     if (!ok) {
@@ -33,6 +46,41 @@
     /* Apply persisted preferences to VICE core and Metal renderer.
      * Called after main_program() so all VICE resources are registered. */
     [SwiftUIPanelCoordinator.shared applyStartupPreferences];
+}
+
+- (void)showSetupSheetWithCompletion:(void (^)(void))completion {
+    // Present CBMSetupView as a sheet on the main window.
+    // The view calls dismiss when the library is ready; we re-attempt start then.
+    NSWindow *mainWindow = [NSApp mainWindow] ?: [NSApp windows].firstObject;
+    if (!mainWindow) {
+        // No window yet — create a minimal one to host the sheet
+        mainWindow = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 1, 1)
+                                                 styleMask:NSWindowStyleMaskBorderless
+                                                   backing:NSBackingStoreBuffered
+                                                     defer:NO];
+        [mainWindow center];
+        [mainWindow makeKeyAndOrderFront:nil];
+    }
+
+    NSViewController *vc = [SwiftUIPanelCoordinator setupViewController];
+    [mainWindow beginSheet:[vc.view window] ?: NSWindow.new completionHandler:^(NSModalResponse response) {
+        if (completion) completion();
+    }];
+
+    // Simpler path: use a hosting window directly
+    NSViewController *setupVC = [SwiftUIPanelCoordinator setupViewController];
+    NSWindow *setupWindow = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 480, 300)
+                                                        styleMask:NSWindowStyleMaskTitled
+                                                          backing:NSBackingStoreBuffered
+                                                            defer:NO];
+    setupWindow.contentViewController = setupVC;
+    setupWindow.title = @"cbm-foundation Setup";
+    [setupWindow center];
+
+    [NSApp runModalForWindow:setupWindow];
+    [setupWindow close];
+
+    if (completion) completion();
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
