@@ -75,6 +75,18 @@ void Vice_MetalSetScanlineTransparency(double transparency);
 /** Enable/disable bilinear filtering. */
 void Vice_MetalSetLinearFilter(int enabled);
 
+/** Set display brightness (0.0–2.0, default 1.0). */
+void Vice_MetalSetBrightness(double brightness);
+
+/** Set color saturation (0.0–2.0, default 1.0). */
+void Vice_MetalSetSaturation(double saturation);
+
+/** Set contrast (0.0–2.0, default 1.0). */
+void Vice_MetalSetContrast(double contrast);
+
+/** Enable/disable CRT barrel-distortion curvature. */
+void Vice_MetalSetCRTCurvature(int enabled);
+
 /** Destroy the view on app shutdown. */
 void Vice_MetalViewDestroy(void);
 

@@ -1,0 +1,63 @@
+name: Bug Report
+description: Something is broken, wrong, or behaving unexpectedly
+title: "[BUG] "
+labels: ["type: bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the problem clearly. Screenshots and console errors are helpful.
+
+  - type: textarea
+    id: what_happened
+    attributes:
+      label: What happened?
+      description: Describe the broken behaviour.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, browser, device, app version
+      placeholder: "macOS 15 / Safari 18 / iPhone 16"
+    validations:
+      required: false
+
+  - type: textarea
+    id: console
+    attributes:
+      label: Console errors
+      description: Paste any relevant error output here.
+      render: shell
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - "Critical — system is down or data is lost"
+        - "High — major feature is broken"
+        - "Medium — feature is degraded but workaround exists"
+        - "Low — cosmetic or minor"
+    validations:
+      required: true

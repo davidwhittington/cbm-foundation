@@ -2,6 +2,7 @@
 // SwiftUI tab-based preferences panel for c=foundation.
 
 import SwiftUI
+import GameController
 
 struct PreferencesView: View {
     @Bindable var model: VICEPreferenceModel
@@ -119,6 +120,7 @@ struct AudioPreferencesTab: View {
 
 struct DrivePreferencesTab: View {
     @Bindable var model: VICEPreferenceModel
+    @State private var physDriveStatus: String = ""
 
     var body: some View {
         Form {
@@ -132,9 +134,48 @@ struct DrivePreferencesTab: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+            Section("Physical Drive (ZoomFloppy / XUM1541)") {
+                Toggle("Enable via opencbm", isOn: $model.physDriveEnabled)
+                if model.physDriveEnabled {
+                    Picker("IEC unit", selection: $model.physDriveUnit) {
+                        ForEach(8...11, id: \.self) { unit in
+                            Text("Unit \(unit)").tag(unit)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    LabeledContent("Status") {
+                        Text(physDriveStatus)
+                            .foregroundStyle(physDriveStatusColor)
+                    }
+                    Text("Requires libopencbm.dylib (brew install opencbm) and a ZoomFloppy or XUM1541 adapter connected via USB.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
         }
         .formStyle(.grouped)
         .padding()
+        .onAppear { refreshPhysDriveStatus() }
+        .onChange(of: model.physDriveEnabled) { _, _ in refreshPhysDriveStatus() }
+    }
+
+    private var physDriveStatusColor: Color {
+        switch physDriveStatus {
+        case "Enabled":     return .green
+        case "Available":   return .secondary
+        case "Unavailable": return .red
+        default:            return .secondary
+        }
+    }
+
+    private func refreshPhysDriveStatus() {
+        let mgr = PhysDrvManager.shared
+        switch mgr.state {
+        case .enabled:      physDriveStatus = "Enabled"
+        case .disabled:     physDriveStatus = "Available"
+        case .error:        physDriveStatus = mgr.lastError ?? "Error"
+        default:            physDriveStatus = "Unavailable"
+        }
     }
 }
 
@@ -142,20 +183,65 @@ struct DrivePreferencesTab: View {
 
 struct InputPreferencesTab: View {
     @Bindable var model: VICEPreferenceModel
+    @State private var connectedControllers: [String] = []
 
     var body: some View {
         Form {
+            // MARK: Joystick
             Section("Joystick") {
-                Text("Port assignment and GameController mapping — Phase 5")
-                    .foregroundStyle(.secondary)
+                Toggle("Swap Joystick Ports (Port 1 ↔ Port 2)", isOn: $model.joySwapPorts)
+                    .onChange(of: model.joySwapPorts) { _, swapped in
+                        vice_mac_joystick_set_port_swap(swapped ? 1 : 0)
+                    }
+
+                LabeledContent("Port Assignment") {
+                    if model.joySwapPorts {
+                        Text("Controller 1 → Port 1   ·   Controller 2 → Port 2")
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text("Controller 1 → Port 2   ·   Controller 2 → Port 1")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                if connectedControllers.isEmpty {
+                    LabeledContent("Connected Controllers") {
+                        Text("None detected")
+                            .foregroundStyle(.secondary)
+                    }
+                } else {
+                    ForEach(Array(connectedControllers.enumerated()), id: \.offset) { idx, name in
+                        LabeledContent("Controller \(idx + 1)") {
+                            Text(name)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
             }
+
+            // MARK: Keyboard
             Section("Keyboard") {
-                Text("Keymap selection (positional / symbolic) — Phase 5")
-                    .foregroundStyle(.secondary)
+                LabeledContent("Layout") {
+                    Text("US Positional (gtk3_sym.vkm)")
+                        .foregroundStyle(.secondary)
+                }
+                LabeledContent("Key mapping") {
+                    Text("Hardware keycodes → C64 matrix")
+                        .foregroundStyle(.secondary)
+                }
             }
         }
         .formStyle(.grouped)
         .padding()
+        .onAppear { refreshControllers() }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name.GCControllerDidConnect))    { _ in refreshControllers() }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name.GCControllerDidDisconnect)) { _ in refreshControllers() }
+    }
+
+    private func refreshControllers() {
+        connectedControllers = GCController.controllers().map {
+            $0.vendorName ?? "Unknown Controller"
+        }
     }
 }
 
@@ -163,11 +249,13 @@ struct InputPreferencesTab: View {
 
 struct NetworkPreferencesTab: View {
     @Bindable var model: VICEPreferenceModel
+    @State private var statusText: String = "Disconnected"
+    @State private var isConnecting: Bool = false
 
     var body: some View {
         Form {
-            Section("FujiNet-PC / NetIEC") {
-                Toggle("Enable NetIEC", isOn: $model.netIECEnabled)
+            Section("FujiNet-PC / Meatloaf (net2iec)") {
+                Toggle("Enable Network Drive (net2iec)", isOn: $model.netIECEnabled)
                 if model.netIECEnabled {
                     LabeledContent("Host") {
                         TextField("localhost", text: $model.netIECHost)
@@ -179,20 +267,57 @@ struct NetworkPreferencesTab: View {
                             .textFieldStyle(.roundedBorder)
                             .frame(maxWidth: 100)
                     }
-                    Text("NetIEC bridges VICE's IEC bus (drives 8–11) to the FujiNet-PC daemon running on this machine.")
+                    LabeledContent("Status") {
+                        Text(statusText)
+                            .foregroundStyle(statusColor)
+                            .monospacedDigit()
+                    }
+                    Button(isConnecting ? "Connecting..." : "Connect Now") {
+                        connect()
+                    }
+                    .disabled(isConnecting)
+                    Text("Bridges VICE IEC bus (drives 8–11) to a Meatloaf or FujiNet-PC server over TCP.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    HStack {
-                        Image(systemName: "exclamationmark.triangle")
-                        Text("NetIEC server support in FujiNet-PC is in active development. This feature is scaffolded.")
-                    }
-                    .font(.caption)
-                    .foregroundStyle(.orange)
                 }
             }
         }
         .formStyle(.grouped)
         .padding()
+        .onAppear { refreshStatus() }
+    }
+
+    private var statusColor: Color {
+        switch statusText {
+        case "Connected":    return .green
+        case "Connecting…": return .orange
+        case "Error":        return .red
+        default:             return .secondary
+        }
+    }
+
+    private func refreshStatus() {
+        let mgr = Net2IECManager.shared
+        switch mgr?.state {
+        case .connected:    statusText = "Connected"
+        case .connecting:   statusText = "Connecting…"
+        case .error:        statusText = mgr?.lastError ?? "Error"
+        default:            statusText = "Disconnected"
+        }
+    }
+
+    private func connect() {
+        isConnecting = true
+        statusText   = "Connecting…"
+        VICEEngine.shared().connectNet2IEC(toHost: model.netIECHost,
+                                            port: model.netIECPort) { success, error in
+            isConnecting = false
+            if success {
+                statusText = "Connected"
+            } else {
+                statusText = error?.localizedDescription ?? "Error"
+            }
+        }
     }
 }
 
@@ -202,6 +327,12 @@ struct LabeledSlider: View {
     let label: String
     @Binding var value: Double
     let range: ClosedRange<Double>
+
+    init(_ label: String, value: Binding<Double>, range: ClosedRange<Double>) {
+        self.label = label
+        self._value = value
+        self.range = range
+    }
 
     var body: some View {
         LabeledContent(label) {

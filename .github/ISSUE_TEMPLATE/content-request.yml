@@ -1,0 +1,56 @@
+name: Content Request
+description: New guide, article, section copy, or editorial update
+title: "[CONTENT] "
+labels: ["type: content", "area: content"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for new written content, updates to existing content, dead links,
+        factual corrections, or documentation gaps.
+
+  - type: dropdown
+    id: content_type
+    attributes:
+      label: Content type
+      options:
+        - "New guide or article"
+        - "New section or page"
+        - "Update to existing content"
+        - "Factual correction"
+        - "Dead link replacement"
+        - "New external resource to add"
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: Page / section
+      description: Which page or section does this affect?
+    validations:
+      required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What needs to be written or changed?
+    validations:
+      required: true
+
+  - type: textarea
+    id: sources
+    attributes:
+      label: Sources / references
+      description: Links, community resources, or expert knowledge to draw from.
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - "High — frequently needed, missing content is a real gap"
+        - "Medium — would improve the section meaningfully"
+        - "Low — nice to have"
+    validations:
+      required: true

@@ -31,6 +31,9 @@ NS_SWIFT_NAME(VICEEngine)
 
 + (instancetype)sharedEngine NS_SWIFT_NAME(shared());
 
+/** The machine class this binary was compiled for (read from VICE's machine_class global). */
++ (VICEMachineModel)compiledMachineClass NS_SWIFT_NAME(compiledMachineClass());
+
 // MARK: - Lifecycle
 
 /** Start the VICE emulator for the given machine. Spawns the VICE thread. */
@@ -89,6 +92,31 @@ NS_SWIFT_NAME(VICEEngine)
 
 /** Set a VICE string resource. Acquires mainlock. */
 - (void)setResourceString:(NSString *)name value:(NSString *)value;
+
+// MARK: - Net2IEC
+
+/** Connect net2iec to a Meatloaf/FujiNet-PC server. Completion on main queue. */
+- (void)connectNet2IECToHost:(NSString *)host
+                        port:(NSInteger)port
+                  completion:(void (^)(BOOL success, NSError *_Nullable error))completion;
+
+/** Disconnect net2iec. */
+- (void)disconnectNet2IEC;
+
+/** Returns YES if net2iec is currently connected. */
+@property (nonatomic, readonly, getter=isNet2IECConnected) BOOL net2IECConnected;
+
+// MARK: - Physical Drive (opencbm / ZoomFloppy / XUM1541)
+
+/** YES if libopencbm.dylib loaded successfully at startup. */
+@property (nonatomic, readonly, getter=isPhysicalDriveAvailable) BOOL physicalDriveAvailable;
+
+/** Enable physical drive passthrough for IEC unit 8–11. */
+- (BOOL)enablePhysicalDriveForUnit:(NSInteger)unit
+                             error:(NSError *_Nullable *_Nullable)error;
+
+/** Disable physical drive passthrough and restore virtual emulation for the unit. */
+- (void)disablePhysicalDriveForUnit:(NSInteger)unit;
 
 @end
 

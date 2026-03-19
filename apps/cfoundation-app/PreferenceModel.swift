@@ -92,6 +92,9 @@ private enum PrefKey {
     static let netIECEnabled   = "NetIECEnabled"
     static let netIECHost      = "NetIECHost"
     static let netIECPort      = "NetIECPort"
+    static let physDriveEnabled = "PhysDriveEnabled"
+    static let physDriveUnit    = "PhysDriveUnit"
+    static let joySwapPorts     = "JoySwapPorts"
 }
 
 // MARK: - VICEPreferenceModel
@@ -125,6 +128,13 @@ final class VICEPreferenceModel {
     var netIECHost: String   = "localhost"
     var netIECPort: Int      = 6400
 
+    // Physical drive (opencbm / ZoomFloppy / XUM1541)
+    var physDriveEnabled: Bool = false
+    var physDriveUnit: Int     = 8
+
+    // Input
+    var joySwapPorts: Bool = false
+
     // MARK: - Persistence
 
     func load() {
@@ -145,6 +155,9 @@ final class VICEPreferenceModel {
         netIECEnabled       = d.bool(forKey: PrefKey.netIECEnabled)
         netIECHost          = d.string(forKey: PrefKey.netIECHost) ?? "localhost"
         netIECPort          = d.integer(forKey: PrefKey.netIECPort) != 0 ? d.integer(forKey: PrefKey.netIECPort) : 6400
+        physDriveEnabled    = d.bool(forKey: PrefKey.physDriveEnabled)
+        physDriveUnit       = d.integer(forKey: PrefKey.physDriveUnit) != 0 ? d.integer(forKey: PrefKey.physDriveUnit) : 8
+        joySwapPorts        = d.bool(forKey: PrefKey.joySwapPorts)
     }
 
     func save() {
@@ -165,6 +178,9 @@ final class VICEPreferenceModel {
         d.set(netIECEnabled,                 forKey: PrefKey.netIECEnabled)
         d.set(netIECHost,                    forKey: PrefKey.netIECHost)
         d.set(netIECPort,                    forKey: PrefKey.netIECPort)
+        d.set(physDriveEnabled,              forKey: PrefKey.physDriveEnabled)
+        d.set(physDriveUnit,                 forKey: PrefKey.physDriveUnit)
+        d.set(joySwapPorts,                  forKey: PrefKey.joySwapPorts)
     }
 
     /// Apply current preference values to the running VICE core via VICEEngine.
@@ -176,6 +192,28 @@ final class VICEPreferenceModel {
         engine.setResourceInt("VirtualDevices",       value: virtualDevices ? 1 : 0)
         engine.setResourceInt("Sound",                value: audioEnabled ? 1 : 0)
         engine.setResourceInt("SoundVolume",          value: Int(audioVolume * 100))
+        applyMetalSettings()
+        if netIECEnabled {
+            engine.connectNet2IEC(toHost: netIECHost, port: netIECPort) { _, _ in }
+        } else {
+            engine.disconnectNet2IEC()
+        }
+        if physDriveEnabled {
+            try? engine.enablePhysicalDrive(forUnit: physDriveUnit)
+        } else {
+            engine.disablePhysicalDrive(forUnit: physDriveUnit)
+        }
+        vice_mac_joystick_set_port_swap(joySwapPorts ? 1 : 0)
+    }
+
+    /// Apply video settings to the Metal renderer.
+    func applyMetalSettings() {
+        Vice_MetalSetScanlines(scanlinesEnabled ? 1 : 0)
+        Vice_MetalSetCRTCurvature(crtCurvatureEnabled ? 1 : 0)
+        Vice_MetalSetBrightness(brightness)
+        Vice_MetalSetSaturation(saturation)
+        Vice_MetalSetContrast(contrast)
+        Vice_MetalSetLinearFilter(linearFilterEnabled ? 1 : 0)
     }
 }
 

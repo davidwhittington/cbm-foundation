@@ -19,8 +19,23 @@
 #include "vice_mac_kbd.h"
 #include "vice_config.h"
 #include "keyboard.h"
+#include "keymap.h"
+#include "kbd.h"
+#include "vhkkeysyms.h"
 #include "log.h"
 #include <stdint.h>
+#include <stdio.h>
+
+/* X11 keysyms used below that have no VHK_KEY_* alias */
+#define X11_KEY_Shift_L     0xffe1
+#define X11_KEY_Shift_R     0xffe2
+#define X11_KEY_Control_L   0xffe3
+#define X11_KEY_Alt_L       0xffe9
+#define X11_KEY_Caps_Lock   0xffe5
+#define X11_KEY_Right       0xff53
+#define X11_KEY_Up          0xff52
+#define X11_KEY_Down        0xff54
+#define X11_KEY_End         0xff57
 
 static log_t vice_kbd_log = LOG_DEFAULT;
 
@@ -128,92 +143,274 @@ static void _build_keymap(void) {
      * These mappings produce a positional US C64 layout.
      * Extended and verified during Phase 5 testing. */
 
-    /* Row 0: function keys → C64 F-keys */
-    s_keymap[MAC_KEY_F1] = KBD_KEY_F1;
-    s_keymap[MAC_KEY_F2] = KBD_KEY_F2;  /* Shift+F1 on real C64; we map F2→F2 */
-    s_keymap[MAC_KEY_F3] = KBD_KEY_F3;
-    s_keymap[MAC_KEY_F4] = KBD_KEY_F4;
-    s_keymap[MAC_KEY_F5] = KBD_KEY_F5;
-    s_keymap[MAC_KEY_F6] = KBD_KEY_F6;
-    s_keymap[MAC_KEY_F7] = KBD_KEY_F7;
-    s_keymap[MAC_KEY_F8] = KBD_KEY_F8;
+    /* Row 0: function keys → C64 F-keys (VHK_KEY_F1 = 0xffbe, F2..F8 sequential) */
+    s_keymap[MAC_KEY_F1] = VHK_KEY_F1;
+    s_keymap[MAC_KEY_F2] = VHK_KEY_F1 + 1;  /* F2 */
+    s_keymap[MAC_KEY_F3] = VHK_KEY_F1 + 2;  /* F3 */
+    s_keymap[MAC_KEY_F4] = VHK_KEY_F1 + 3;  /* F4 */
+    s_keymap[MAC_KEY_F5] = VHK_KEY_F1 + 4;  /* F5 */
+    s_keymap[MAC_KEY_F6] = VHK_KEY_F1 + 5;  /* F6 */
+    s_keymap[MAC_KEY_F7] = VHK_KEY_F1 + 6;  /* F7 */
+    s_keymap[MAC_KEY_F8] = VHK_KEY_F1 + 7;  /* F8 */
 
     /* Row 1: number row */
-    s_keymap[MAC_KEY_ANSI_GRAVE]    = KBD_KEY_GRAVE;  /* ← → mapped to backtick */
-    s_keymap[MAC_KEY_ANSI_1]        = KBD_KEY_1;
-    s_keymap[MAC_KEY_ANSI_2]        = KBD_KEY_2;
-    s_keymap[MAC_KEY_ANSI_3]        = KBD_KEY_3;
-    s_keymap[MAC_KEY_ANSI_4]        = KBD_KEY_4;
-    s_keymap[MAC_KEY_ANSI_5]        = KBD_KEY_5;
-    s_keymap[MAC_KEY_ANSI_6]        = KBD_KEY_6;
-    s_keymap[MAC_KEY_ANSI_7]        = KBD_KEY_7;
-    s_keymap[MAC_KEY_ANSI_8]        = KBD_KEY_8;
-    s_keymap[MAC_KEY_ANSI_9]        = KBD_KEY_9;
-    s_keymap[MAC_KEY_ANSI_0]        = KBD_KEY_0;
-    s_keymap[MAC_KEY_ANSI_MINUS]    = KBD_KEY_MINUS;
-    s_keymap[MAC_KEY_ANSI_EQUAL]    = KBD_KEY_EQUAL;  /* + on C64 */
-    s_keymap[MAC_KEY_DELETE]        = KBD_KEY_DEL;
+    s_keymap[MAC_KEY_ANSI_GRAVE]    = 0x60;  /* grave accent — C64 ← (left arrow) */
+    s_keymap[MAC_KEY_ANSI_1]        = '1';
+    s_keymap[MAC_KEY_ANSI_2]        = '2';
+    s_keymap[MAC_KEY_ANSI_3]        = '3';
+    s_keymap[MAC_KEY_ANSI_4]        = '4';
+    s_keymap[MAC_KEY_ANSI_5]        = '5';
+    s_keymap[MAC_KEY_ANSI_6]        = '6';
+    s_keymap[MAC_KEY_ANSI_7]        = '7';
+    s_keymap[MAC_KEY_ANSI_8]        = '8';
+    s_keymap[MAC_KEY_ANSI_9]        = '9';
+    s_keymap[MAC_KEY_ANSI_0]        = '0';
+    s_keymap[MAC_KEY_ANSI_MINUS]    = '-';
+    s_keymap[MAC_KEY_ANSI_EQUAL]    = '=';   /* + on C64 */
+    s_keymap[MAC_KEY_DELETE]        = VHK_KEY_BackSpace;
 
-    /* Row 2: QWERTY */
-    s_keymap[MAC_KEY_TAB]           = KBD_KEY_TAB;   /* CTRL on C64 */
-    s_keymap[MAC_KEY_ANSI_Q]        = KBD_KEY_Q;
-    s_keymap[MAC_KEY_ANSI_W]        = KBD_KEY_W;
-    s_keymap[MAC_KEY_ANSI_E]        = KBD_KEY_E;
-    s_keymap[MAC_KEY_ANSI_R]        = KBD_KEY_R;
-    s_keymap[MAC_KEY_ANSI_T]        = KBD_KEY_T;
-    s_keymap[MAC_KEY_ANSI_Y]        = KBD_KEY_Y;
-    s_keymap[MAC_KEY_ANSI_U]        = KBD_KEY_U;
-    s_keymap[MAC_KEY_ANSI_I]        = KBD_KEY_I;
-    s_keymap[MAC_KEY_ANSI_O]        = KBD_KEY_O;
-    s_keymap[MAC_KEY_ANSI_P]        = KBD_KEY_P;
-    s_keymap[MAC_KEY_ANSI_LEFTBRACKET]  = KBD_KEY_AT;       /* @ on C64 */
-    s_keymap[MAC_KEY_ANSI_RIGHTBRACKET] = KBD_KEY_ASTERISK; /* * on C64 */
+    /* Row 2: QWERTY — X11 keysyms for letters = ASCII lowercase */
+    s_keymap[MAC_KEY_TAB]           = VHK_KEY_Tab;
+    s_keymap[MAC_KEY_ANSI_Q]        = 'q';
+    s_keymap[MAC_KEY_ANSI_W]        = 'w';
+    s_keymap[MAC_KEY_ANSI_E]        = 'e';
+    s_keymap[MAC_KEY_ANSI_R]        = 'r';
+    s_keymap[MAC_KEY_ANSI_T]        = 't';
+    s_keymap[MAC_KEY_ANSI_Y]        = 'y';
+    s_keymap[MAC_KEY_ANSI_U]        = 'u';
+    s_keymap[MAC_KEY_ANSI_I]        = 'i';
+    s_keymap[MAC_KEY_ANSI_O]        = 'o';
+    s_keymap[MAC_KEY_ANSI_P]        = 'p';
+    s_keymap[MAC_KEY_ANSI_LEFTBRACKET]  = '@';  /* @ on C64 */
+    s_keymap[MAC_KEY_ANSI_RIGHTBRACKET] = '*';  /* * on C64 */
 
     /* Row 3: ASDF */
-    s_keymap[MAC_KEY_LEFTCTRL]      = KBD_KEY_CTRL;
-    s_keymap[MAC_KEY_ANSI_A]        = KBD_KEY_A;
-    s_keymap[MAC_KEY_ANSI_S]        = KBD_KEY_S;
-    s_keymap[MAC_KEY_ANSI_D]        = KBD_KEY_D;
-    s_keymap[MAC_KEY_ANSI_F]        = KBD_KEY_F;
-    s_keymap[MAC_KEY_ANSI_G]        = KBD_KEY_G;
-    s_keymap[MAC_KEY_ANSI_H]        = KBD_KEY_H;
-    s_keymap[MAC_KEY_ANSI_J]        = KBD_KEY_J;
-    s_keymap[MAC_KEY_ANSI_K]        = KBD_KEY_K;
-    s_keymap[MAC_KEY_ANSI_L]        = KBD_KEY_L;
-    s_keymap[MAC_KEY_ANSI_SEMICOLON] = KBD_KEY_COLON;   /* : on C64 */
-    s_keymap[MAC_KEY_ANSI_QUOTE]     = KBD_KEY_SEMICOLON; /* ; on C64 */
-    s_keymap[MAC_KEY_ANSI_BACKSLASH] = KBD_KEY_EQUAL;   /* = on C64 */
-    s_keymap[MAC_KEY_RETURN]         = KBD_KEY_RETURN;
+    s_keymap[MAC_KEY_LEFTCTRL]      = X11_KEY_Control_L;
+    s_keymap[MAC_KEY_ANSI_A]        = 'a';
+    s_keymap[MAC_KEY_ANSI_S]        = 's';
+    s_keymap[MAC_KEY_ANSI_D]        = 'd';
+    s_keymap[MAC_KEY_ANSI_F]        = 'f';
+    s_keymap[MAC_KEY_ANSI_G]        = 'g';
+    s_keymap[MAC_KEY_ANSI_H]        = 'h';
+    s_keymap[MAC_KEY_ANSI_J]        = 'j';
+    s_keymap[MAC_KEY_ANSI_K]        = 'k';
+    s_keymap[MAC_KEY_ANSI_L]        = 'l';
+    s_keymap[MAC_KEY_ANSI_SEMICOLON] = ':';  /* : on C64 */
+    s_keymap[MAC_KEY_ANSI_QUOTE]     = ';';  /* ; on C64 */
+    s_keymap[MAC_KEY_ANSI_BACKSLASH] = '=';  /* = on C64 */
+    s_keymap[MAC_KEY_RETURN]         = VHK_KEY_Return;
 
     /* Row 4: ZXCV */
-    s_keymap[MAC_KEY_LEFTSHIFT]     = KBD_KEY_LSHIFT;
-    s_keymap[MAC_KEY_ANSI_Z]        = KBD_KEY_Z;
-    s_keymap[MAC_KEY_ANSI_X]        = KBD_KEY_X;
-    s_keymap[MAC_KEY_ANSI_C]        = KBD_KEY_C;
-    s_keymap[MAC_KEY_ANSI_V]        = KBD_KEY_V;
-    s_keymap[MAC_KEY_ANSI_B]        = KBD_KEY_B;
-    s_keymap[MAC_KEY_ANSI_N]        = KBD_KEY_N;
-    s_keymap[MAC_KEY_ANSI_M]        = KBD_KEY_M;
-    s_keymap[MAC_KEY_ANSI_COMMA]    = KBD_KEY_COMMA;
-    s_keymap[MAC_KEY_ANSI_PERIOD]   = KBD_KEY_PERIOD;
-    s_keymap[MAC_KEY_ANSI_SLASH]    = KBD_KEY_SLASH;
-    s_keymap[MAC_KEY_RIGHTSHIFT]    = KBD_KEY_RSHIFT;
+    s_keymap[MAC_KEY_LEFTSHIFT]     = X11_KEY_Shift_L;
+    s_keymap[MAC_KEY_ANSI_Z]        = 'z';
+    s_keymap[MAC_KEY_ANSI_X]        = 'x';
+    s_keymap[MAC_KEY_ANSI_C]        = 'c';
+    s_keymap[MAC_KEY_ANSI_V]        = 'v';
+    s_keymap[MAC_KEY_ANSI_B]        = 'b';
+    s_keymap[MAC_KEY_ANSI_N]        = 'n';
+    s_keymap[MAC_KEY_ANSI_M]        = 'm';
+    s_keymap[MAC_KEY_ANSI_COMMA]    = ',';
+    s_keymap[MAC_KEY_ANSI_PERIOD]   = '.';
+    s_keymap[MAC_KEY_ANSI_SLASH]    = '/';
+    s_keymap[MAC_KEY_RIGHTSHIFT]    = X11_KEY_Shift_R;
 
     /* Row 5: bottom row */
-    s_keymap[MAC_KEY_LEFTCMD]       = KBD_KEY_CBM;    /* Commodore key */
-    s_keymap[MAC_KEY_SPACE]         = KBD_KEY_SPACE;
+    s_keymap[MAC_KEY_LEFTCMD]       = X11_KEY_Alt_L;  /* Commodore key → Alt_L */
+    s_keymap[MAC_KEY_SPACE]         = VHK_KEY_space;
 
     /* Cursor keys */
-    s_keymap[MAC_KEY_CURSOR_LEFT]   = KBD_KEY_LEFT;
-    s_keymap[MAC_KEY_CURSOR_RIGHT]  = KBD_KEY_RIGHT;
-    s_keymap[MAC_KEY_CURSOR_UP]     = KBD_KEY_UP;
-    s_keymap[MAC_KEY_CURSOR_DOWN]   = KBD_KEY_DOWN;
+    s_keymap[MAC_KEY_CURSOR_LEFT]   = VHK_KEY_Left;
+    s_keymap[MAC_KEY_CURSOR_RIGHT]  = X11_KEY_Right;
+    s_keymap[MAC_KEY_CURSOR_UP]     = X11_KEY_Up;
+    s_keymap[MAC_KEY_CURSOR_DOWN]   = X11_KEY_Down;
 
     /* Special */
-    s_keymap[MAC_KEY_HOME]          = KBD_KEY_HOME;
-    s_keymap[MAC_KEY_ESCAPE]        = KBD_KEY_RUNSTOP;
-    s_keymap[MAC_KEY_CAPSLOCK]      = KBD_KEY_SHIFTLOCK;
-    s_keymap[MAC_KEY_LEFTALT]       = KBD_KEY_RESTORE;
+    s_keymap[MAC_KEY_HOME]          = VHK_KEY_Home;
+    s_keymap[MAC_KEY_ESCAPE]        = VHK_KEY_Escape;  /* Run/Stop */
+    s_keymap[MAC_KEY_CAPSLOCK]      = X11_KEY_Caps_Lock;
+    s_keymap[MAC_KEY_LEFTALT]       = VHK_KEY_F1 + 11; /* F12 → Restore key */
+}
+
+/* ── kbd_arch_* — replaces arch/headless/kbd.c ──────────────────────────── */
+/*
+ * VICE calls kbd_arch_keyname_to_keynum() when parsing a .vkm keymap file to
+ * convert GDK/X11 key name strings → numeric keysym values.  The headless
+ * arch stub returns -1 for everything, so no keys load.  We provide the full
+ * table here (covering every key name in gtk3_sym.vkm + a few extras).
+ *
+ * Values match X11/GDK keysym definitions.  ASCII printable characters have
+ * keysym == ASCII code (0x20–0x7E), so we handle those generically.
+ */
+
+typedef struct { const char *name; signed long sym; } keysym_entry_t;
+
+static const keysym_entry_t s_keysym_table[] = {
+    /* Control / whitespace */
+    { "BackSpace",        0xFF08 },
+    { "Tab",              0xFF09 },
+    { "ISO_Left_Tab",     0xFE20 },
+    { "Return",           0xFF0D },
+    { "Escape",           0xFF1B },
+    { "space",            0x0020 },
+    { "Delete",           0xFFFF },
+    /* Cursor / navigation */
+    { "Home",             0xFF50 },
+    { "Left",             0xFF51 },
+    { "Up",               0xFF52 },
+    { "Right",            0xFF53 },
+    { "Down",             0xFF54 },
+    { "Page_Up",          0xFF55 },
+    { "Prior",            0xFF55 },
+    { "Page_Down",        0xFF56 },
+    { "End",              0xFF57 },
+    { "Insert",           0xFF63 },
+    /* Keypad */
+    { "Num_Lock",         0xFF7F },
+    { "KP_Enter",         0xFF8D },
+    { "KP_F1",            0xFF91 },
+    { "KP_F2",            0xFF92 },
+    { "KP_F3",            0xFF93 },
+    { "KP_F4",            0xFF94 },
+    { "KP_Home",          0xFF95 },
+    { "KP_Left",          0xFF96 },
+    { "KP_Up",            0xFF97 },
+    { "KP_Right",         0xFF98 },
+    { "KP_Down",          0xFF99 },
+    { "KP_Prior",         0xFF9A },
+    { "KP_Page_Up",       0xFF9A },
+    { "KP_Next",          0xFF9B },
+    { "KP_Page_Down",     0xFF9B },
+    { "KP_End",           0xFF9F },
+    { "KP_Begin",         0xFF9D },
+    { "KP_Insert",        0xFF9E },
+    { "KP_Delete",        0xFF9F },
+    { "KP_Multiply",      0xFFAA },
+    { "KP_Add",           0xFFAB },
+    { "KP_Subtract",      0xFFAD },
+    { "KP_Divide",        0xFFAF },
+    { "KP_0",             0xFFB0 },
+    { "KP_1",             0xFFB1 },
+    { "KP_2",             0xFFB2 },
+    { "KP_3",             0xFFB3 },
+    { "KP_4",             0xFFB4 },
+    { "KP_5",             0xFFB5 },
+    { "KP_6",             0xFFB6 },
+    { "KP_7",             0xFFB7 },
+    { "KP_8",             0xFFB8 },
+    { "KP_9",             0xFFB9 },
+    /* Function keys */
+    { "F1",               0xFFBE },
+    { "F2",               0xFFBF },
+    { "F3",               0xFFC0 },
+    { "F4",               0xFFC1 },
+    { "F5",               0xFFC2 },
+    { "F6",               0xFFC3 },
+    { "F7",               0xFFC4 },
+    { "F8",               0xFFC5 },
+    { "F9",               0xFFC6 },
+    { "F10",              0xFFC7 },
+    { "F11",              0xFFC8 },
+    { "F12",              0xFFC9 },
+    /* Modifier keys */
+    { "Shift_L",          0xFFE1 },
+    { "Shift_R",          0xFFE2 },
+    { "Control_L",        0xFFE3 },
+    { "Control_R",        0xFFE4 },
+    { "Caps_Lock",        0xFFE5 },
+    { "Alt_L",            0xFFE9 },
+    { "Alt_R",            0xFFEA },
+    { "Meta_L",           0xFFE7 },
+    { "Meta_R",           0xFFE8 },
+    { "Super_L",          0xFFEB },
+    { "Super_R",          0xFFEC },
+    /* Misc */
+    { "Print",            0xFF61 },
+    { "Scroll_Lock",      0xFF14 },
+    { "Sys_Req",          0xFF15 },
+    { "Pause",            0xFF13 },
+    /* Named ASCII symbols (keysym == ASCII value) */
+    { "exclam",           0x21 },
+    { "quotedbl",         0x22 },
+    { "numbersign",       0x23 },
+    { "dollar",           0x24 },
+    { "percent",          0x25 },
+    { "ampersand",        0x26 },
+    { "apostrophe",       0x27 },
+    { "parenleft",        0x28 },
+    { "parenright",       0x29 },
+    { "asterisk",         0x2A },
+    { "plus",             0x2B },
+    { "comma",            0x2C },
+    { "minus",            0x2D },
+    { "period",           0x2E },
+    { "slash",            0x2F },
+    { "colon",            0x3A },
+    { "semicolon",        0x3B },
+    { "less",             0x3C },
+    { "equal",            0x3D },
+    { "greater",          0x3E },
+    { "question",         0x3F },
+    { "at",               0x40 },
+    { "bracketleft",      0x5B },
+    { "backslash",        0x5C },
+    { "bracketright",     0x5D },
+    { "asciicircum",      0x5E },
+    { "underscore",       0x5F },
+    { "grave",            0x60 },
+    { "bar",              0x7C },
+    { "asciitilde",       0x7E },
+    /* Latin-1 supplement */
+    { "sterling",         0x00A3 },
+    /* Dead (combining) keys — used in international layouts */
+    { "dead_grave",       0xFE50 },
+    { "dead_acute",       0xFE51 },
+    { "dead_circumflex",  0xFE52 },
+    { "dead_tilde",       0xFE53 },
+    { "dead_perispomeni", 0xFE53 },
+    { "dead_diaeresis",   0xFE57 },
+    { NULL,               0 }
+};
+
+int kbd_arch_get_host_mapping(void) {
+    return KBD_MAPPING_US;
+}
+
+void kbd_arch_init(void)     {}
+void kbd_arch_shutdown(void) {}
+void kbd_initialize_numpad_joykeys(int *joykeys) { (void)joykeys; }
+void kbd_hotkey_init(void)     {}
+void kbd_hotkey_shutdown(void) {}
+
+signed long kbd_arch_keyname_to_keynum(char *keyname) {
+    if (!keyname || !*keyname) return -1;
+
+    /* Single ASCII printable character — keysym == ASCII code */
+    if (keyname[1] == '\0') {
+        unsigned char c = (unsigned char)keyname[0];
+        if (c >= 0x20 && c <= 0x7E) return (signed long)c;
+    }
+
+    /* Named keys: linear scan (table is short) */
+    for (const keysym_entry_t *e = s_keysym_table; e->name; e++) {
+        if (strcmp(e->name, keyname) == 0) return e->sym;
+    }
+    return -1;
+}
+
+const char *kbd_arch_keynum_to_keyname(signed long keynum) {
+    static char buf[16];
+    /* Reverse lookup in table */
+    for (const keysym_entry_t *e = s_keysym_table; e->name; e++) {
+        if (e->sym == keynum) return e->name;
+    }
+    /* ASCII printable fallback */
+    if (keynum >= 0x21 && keynum <= 0x7E) {
+        buf[0] = (char)keynum;
+        buf[1] = '\0';
+        return buf;
+    }
+    snprintf(buf, sizeof(buf), "%ld", (long)keynum);
+    return buf;
 }
 
 /* ── Public API ─────────────────────────────────────────────────────────── */
@@ -230,16 +427,56 @@ void vice_mac_key_event(uint16_t macKeyCode, uint32_t modifiers, int down) {
     int viceKey = s_keymap[macKeyCode];
     if (viceKey == VICE_KEY_NONE) return;
 
-    /* Translate modifier flags to VICE KBD_MOD_* bitmask */
+    /* Translate NSEvent modifier flags to VICE KBD_MOD_* bitmask.
+     * NSEventModifierFlagShift   = 1<<17 (0x20000)
+     * NSEventModifierFlagControl = 1<<18 (0x40000)
+     * NSEventModifierFlagOption  = 1<<19 (0x80000)  — Alt/Commodore key
+     * macOS does not distinguish L/R shift in the flags; we track those
+     * via the individual key-press events (Shift_L / Shift_R) instead. */
     int viceMod = 0;
-    if (modifiers & (1 << 17)) viceMod |= KBD_MOD_LSHIFT;   /* NSShiftKeyMask */
-    if (modifiers & (1 << 18)) viceMod |= KBD_MOD_RSHIFT;
-    if (modifiers & (1 << 12)) viceMod |= KBD_MOD_LCTRL;    /* NSControlKeyMask */
-    if (modifiers & (1 << 11)) viceMod |= KBD_MOD_LALT;     /* NSAlternateKeyMask */
+    if (modifiers & (1u << 17)) viceMod |= KBD_MOD_LSHIFT;
+    if (modifiers & (1u << 18)) viceMod |= KBD_MOD_LCTRL;
+    if (modifiers & (1u << 19)) viceMod |= KBD_MOD_LALT;
 
     if (down) {
         keyboard_key_pressed((signed long)viceKey, viceMod);
     } else {
         keyboard_key_released((signed long)viceKey, viceMod);
     }
+}
+
+void vice_mac_modifier_event(uint16_t macKeyCode, uint32_t modifiers) {
+    /* NSEventTypeFlagsChanged fires for modifier key press AND release.
+     * Determine press vs release by checking the modifier flag bit for this
+     * key against the current modifierFlags value.
+     *
+     * NSEventModifierFlagShift   = 1<<17 = 0x00020000
+     * NSEventModifierFlagControl = 1<<18 = 0x00040000
+     * NSEventModifierFlagOption  = 1<<19 = 0x00080000
+     * NSEventModifierFlagCommand = 1<<20 = 0x00100000
+     * NSEventModifierFlagCapsLock= 1<<16 = 0x00010000
+     */
+    static const struct {
+        uint16_t keyCode;
+        uint32_t flagBit;
+    } modMap[] = {
+        { MAC_KEY_LEFTSHIFT,  1u << 17 },
+        { MAC_KEY_RIGHTSHIFT, 1u << 17 },
+        { MAC_KEY_LEFTCTRL,   1u << 18 },
+        { MAC_KEY_LEFTALT,    1u << 19 },
+        { MAC_KEY_LEFTCMD,    1u << 20 },
+        { MAC_KEY_CAPSLOCK,   1u << 16 },
+        { 0, 0 }
+    };
+
+    uint32_t flagBit = 0;
+    for (int i = 0; modMap[i].keyCode != 0; i++) {
+        if (modMap[i].keyCode == macKeyCode) {
+            flagBit = modMap[i].flagBit;
+            break;
+        }
+    }
+
+    int down = (flagBit != 0) ? ((modifiers & flagBit) != 0) : 0;
+    vice_mac_key_event(macKeyCode, modifiers, down);
 }

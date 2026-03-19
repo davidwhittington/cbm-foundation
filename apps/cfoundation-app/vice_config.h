@@ -12,6 +12,11 @@
 #define VICE_ARCHTYPE_NATIVE_MACOS 1
 #define MACOSX 1
 
+/* Runtime data and docs paths — used when not running from a bindist bundle.
+ * In debug builds these point to the VICE data inside the repo. */
+#define VICE_DATADIR "/usr/local/share/vice"
+#define VICE_DOCDIR  "/usr/local/share/vice/doc"
+
 /* Define if building universal (internal helper macro) */
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 
@@ -441,7 +446,9 @@
 /* #undef HAVE_RAWNET */
 
 /* Support for OpenCBM (former CBM4Linux). */
-#define HAVE_REALDEVICE /**/
+/* libopencbm.dylib is loaded at runtime via dlopen — no link-time dependency. */
+/* Build-time header: vice/vice-3.9/src/lib/opencbm.h (bundled in VICE source). */
+#define HAVE_REALDEVICE 1
 
 /* Define to 1 if you have the `recv' function. */
 #define HAVE_RECV 1
@@ -760,7 +767,7 @@
 #define USE_GCC /**/
 
 /* Use GTK3 UI. */
-#define USE_GTK3UI /**/
+/* #undef USE_GTK3UI */  /* disabled — using native macOS arch layer */
 
 /* Enable Headless UI support. */
 /* #undef USE_HEADLESSUI */

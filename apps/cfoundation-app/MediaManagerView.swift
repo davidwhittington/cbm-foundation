@@ -45,6 +45,7 @@ struct MediaManagerView: View {
     @State private var cartridge = CartridgeSlot()
     @State private var showingDiskPicker: Int? = nil
     @State private var showingCartPicker = false
+    @State private var attachError: String? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -95,6 +96,14 @@ struct MediaManagerView: View {
                 attachCartridge(url: url)
             }
         }
+        .alert("Attach Failed", isPresented: Binding(
+            get: { attachError != nil },
+            set: { if !$0 { attachError = nil } }
+        )) {
+            Button("OK") { attachError = nil }
+        } message: {
+            Text(attachError ?? "")
+        }
     }
 
     // MARK: - Actions
@@ -102,9 +111,11 @@ struct MediaManagerView: View {
     private func attachDisk(url: URL, unit: Int) {
         guard let idx = drives.firstIndex(where: { $0.unit == unit }) else { return }
         drives[idx].imageURL = url
-        var error: NSError?
-        if !VICEEngine.shared().attachDisk(url, unit: unit, drive: 0, error: &error) {
-            // TODO: surface error to user
+        do {
+            try VICEEngine.shared().attachDiskURL(url, unit: unit, drive: 0)
+        } catch {
+            drives[idx].imageURL = nil
+            attachError = error.localizedDescription
         }
     }
 
@@ -116,9 +127,11 @@ struct MediaManagerView: View {
 
     private func attachCartridge(url: URL) {
         cartridge.imageURL = url
-        var error: NSError?
-        if !VICEEngine.shared().attachCartridge(url, error: &error) {
-            // TODO: surface error to user
+        do {
+            try VICEEngine.shared().attachCartridgeURL(url)
+        } catch {
+            cartridge.imageURL = nil
+            attachError = error.localizedDescription
         }
     }
 

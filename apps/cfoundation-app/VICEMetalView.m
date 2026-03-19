@@ -10,6 +10,7 @@
  */
 
 #import "VICEMetalView.h"
+#import "VICEDisplayManager.h"
 #import <Metal/Metal.h>
 #import <MetalKit/MetalKit.h>
 #import <os/lock.h>
@@ -50,6 +51,15 @@ typedef struct {
     NSInteger _texWidth;
     NSInteger _texHeight;
 }
+
+// MARK: - First responder
+
+/* Accept first responder so the window can route key events to us.
+ * Our event loop polls via [NSApp nextEventMatchingMask] so we intercept
+ * key events before they hit the responder chain — but the view still needs
+ * to be a valid first responder for the window to forward keyboard focus. */
+- (BOOL)acceptsFirstResponder { return YES; }
+- (BOOL)canBecomeKeyView      { return YES; }
 
 // MARK: - Init
 
@@ -239,13 +249,20 @@ typedef struct {
 static VICEMetalView *gMetalView = nil;
 
 void Vice_MetalViewCreate(void *nsWindow, int width, int height) {
-    dispatch_sync(dispatch_get_main_queue(), ^{
+    void (^create)(void) = ^{
         NSWindow *window = (__bridge NSWindow *)nsWindow;
         CGRect frame = CGRectMake(0, 0, width, height);
         gMetalView = [[VICEMetalView alloc] initWithFrame:frame];
         gMetalView.emulatorResolution = CGSizeMake(width, height);
         window.contentView = gMetalView;
-    });
+        /* Make the view first responder so key events are routed to our window. */
+        [window makeFirstResponder:gMetalView];
+    };
+    if ([NSThread isMainThread]) {
+        create();
+    } else {
+        dispatch_sync(dispatch_get_main_queue(), create);
+    }
 }
 
 void Vice_MetalPresent(const uint32_t *argbPixels,
@@ -269,6 +286,36 @@ void Vice_MetalSetLinearFilter(int enabled) {
     dispatch_async(dispatch_get_main_queue(), ^{
         gMetalView.linearFilterEnabled = (enabled != 0);
     });
+}
+
+void Vice_MetalSetBrightness(double brightness) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        gMetalView.brightness = (float)brightness;
+    });
+}
+
+void Vice_MetalSetSaturation(double saturation) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        gMetalView.saturation = (float)saturation;
+    });
+}
+
+void Vice_MetalSetContrast(double contrast) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        gMetalView.contrast = (float)contrast;
+    });
+}
+
+void Vice_MetalSetCRTCurvature(int enabled) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        gMetalView.crtCurvatureEnabled = (enabled != 0);
+    });
+}
+
+void Vice_MetalViewSetDisplayManager(void) {
+    // Wire the frame pipeline: DisplayManager → MetalView.
+    // Called from vice_mac_ui_init() on the main thread after Vice_MetalViewCreate().
+    [VICEDisplayManager sharedManager].metalView = gMetalView;
 }
 
 void Vice_MetalViewDestroy(void) {

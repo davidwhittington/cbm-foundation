@@ -4,6 +4,8 @@
  */
 
 #import "VICEEngine.h"
+#import "Net2IECManager.h"
+#import "PhysDrvManager.h"
 
 // VICE C headers
 #include "main.h"
@@ -32,6 +34,20 @@
     static dispatch_once_t once;
     dispatch_once(&once, ^{ instance = [[VICEEngine alloc] init]; });
     return instance;
+}
+
++ (VICEMachineModel)compiledMachineClass {
+    /* machine_class is a global int defined in the machine's C source file:
+     *   c64.c        → VICE_MACHINE_C64   (1<<0 = 1)
+     *   c64memsc.c   → VICE_MACHINE_C64SC (1<<8 = 256)
+     * Reading it at runtime means no compile-time defines are needed.
+     */
+    extern int machine_class;
+    switch (machine_class) {
+        case (1 << 0): return VICEMachineModelC64;
+        case (1 << 8): return VICEMachineModelC64SC;
+        default:       return VICEMachineModelC64;
+    }
 }
 
 // MARK: - Lifecycle
@@ -102,9 +118,13 @@
 - (void)setPauseEnabled:(BOOL)pauseEnabled {
     _pauseEnabled = pauseEnabled;
     if (_running) {
-        // VICE uses vsync_suspend_speed_eval() + a pause flag
-        // Full implementation in Phase 4
-        (void)pauseEnabled;
+        extern void ui_pause_enable(void);
+        extern void ui_pause_disable(void);
+        if (pauseEnabled) {
+            ui_pause_enable();
+        } else {
+            ui_pause_disable();
+        }
     }
 }
 
@@ -218,14 +238,13 @@
 // MARK: - Input
 
 - (void)keyDown:(uint16_t)macKeyCode modifiers:(NSUInteger)mods {
-    // Full implementation in Phase 2 (vice_mac_kbd.c)
-    // extern void vice_mac_key_event(uint16_t keyCode, uint32_t mods, BOOL down);
-    // vice_mac_key_event(macKeyCode, (uint32_t)mods, YES);
-    (void)macKeyCode; (void)mods;
+    extern void vice_mac_key_event(uint16_t keyCode, uint32_t mods, int down);
+    vice_mac_key_event(macKeyCode, (uint32_t)mods, 1);
 }
 
 - (void)keyUp:(uint16_t)macKeyCode modifiers:(NSUInteger)mods {
-    (void)macKeyCode; (void)mods;
+    extern void vice_mac_key_event(uint16_t keyCode, uint32_t mods, int down);
+    vice_mac_key_event(macKeyCode, (uint32_t)mods, 0);
 }
 
 - (void)joystickPort:(NSInteger)port direction:(uint8_t)dir fire:(BOOL)fire {
@@ -251,6 +270,47 @@
     mainlock_obtain();
     resources_set_string(name.UTF8String, value.UTF8String);
     mainlock_release();
+}
+
+// MARK: - Net2IEC
+
+- (void)connectNet2IECToHost:(NSString *)host
+                        port:(NSInteger)port
+                  completion:(void (^)(BOOL success, NSError *_Nullable error))completion
+{
+    [[Net2IECManager sharedManager] connectToHost:host
+                                             port:(uint16_t)port
+                                       completion:completion];
+}
+
+- (void)disconnectNet2IEC {
+    [[Net2IECManager sharedManager] disconnect];
+}
+
+- (BOOL)isNet2IECConnected {
+    return [Net2IECManager sharedManager].state == Net2IECStateConnected;
+}
+
+// MARK: - Physical Drive
+
+- (BOOL)isPhysicalDriveAvailable {
+    return [PhysDrvManager sharedManager].available;
+}
+
+- (BOOL)enablePhysicalDriveForUnit:(NSInteger)unit error:(NSError **)error {
+    if (!_running) {
+        if (error) {
+            *error = [NSError errorWithDomain:@"VICEEngineErrorDomain"
+                                         code:-1
+                                     userInfo:@{NSLocalizedDescriptionKey: @"VICE is not running"}];
+        }
+        return NO;
+    }
+    return [[PhysDrvManager sharedManager] enableForUnit:unit error:error];
+}
+
+- (void)disablePhysicalDriveForUnit:(NSInteger)unit {
+    [[PhysDrvManager sharedManager] disableForUnit:unit];
 }
 
 @end

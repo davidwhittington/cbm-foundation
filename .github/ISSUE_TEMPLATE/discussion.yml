@@ -1,0 +1,50 @@
+name: Discussion / Decision
+description: Architectural question, strategy decision, or open question that needs resolution before work starts
+title: "[DISCUSS] "
+labels: ["type: discussion", "status: needs-spec"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this when you have an idea or question that needs to be talked through
+        before anyone writes code or content. Close it with a comment recording
+        the decision made — that comment becomes the permanent record.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: What is the question or decision?
+      description: State it as clearly as possible. One question per issue.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Why does this need to be decided? What depends on the answer?
+    validations:
+      required: true
+
+  - type: textarea
+    id: options
+    attributes:
+      label: Options being considered
+      description: List the approaches you are weighing. Leave blank if you do not have options yet.
+      placeholder: |
+        Option A:
+        Option B:
+        Option C:
+
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Constraints / requirements
+      description: What must be true about any valid solution?
+
+  - type: input
+    id: deadline
+    attributes:
+      label: Decision needed by
+      description: Is there a phase or date this needs to be resolved before?
+      placeholder: "Before Phase 2 work starts"

@@ -19,27 +19,71 @@ settings:
     GCC_C_LANGUAGE_STANDARD: gnu11
 
     # Header search paths — VICE core + our app layer
+    # Our app dir comes first so config.h symlink wins over any generated config.h.
+    # All VICE subdirectory headers included (excludes arch/gtk3 and arch/sdl).
     HEADER_SEARCH_PATHS: >-
       $(SRCROOT)/apps/cfoundation-app
       $(SRCROOT)/vice/vice-3.9/src
       $(SRCROOT)/vice/vice-3.9/src/c64
       $(SRCROOT)/vice/vice-3.9/src/c64/cart
+      $(SRCROOT)/vice/vice-3.9/src/c64dtv
+      $(SRCROOT)/vice/vice-3.9/src/c128
+      $(SRCROOT)/vice/vice-3.9/src/c128/cart
+      $(SRCROOT)/vice/vice-3.9/src/cbm2
+      $(SRCROOT)/vice/vice-3.9/src/cbm2/cart
+      $(SRCROOT)/vice/vice-3.9/src/pet
+      $(SRCROOT)/vice/vice-3.9/src/plus4
+      $(SRCROOT)/vice/vice-3.9/src/plus4/cart
+      $(SRCROOT)/vice/vice-3.9/src/vic20
+      $(SRCROOT)/vice/vice-3.9/src/scpu64
       $(SRCROOT)/vice/vice-3.9/src/vicii
+      $(SRCROOT)/vice/vice-3.9/src/viciisc
+      $(SRCROOT)/vice/vice-3.9/src/vdc
+      $(SRCROOT)/vice/vice-3.9/src/crtc
       $(SRCROOT)/vice/vice-3.9/src/sid
+      $(SRCROOT)/vice/vice-3.9/src/resid
+      $(SRCROOT)/vice/vice-3.9/src/resid-dtv
       $(SRCROOT)/vice/vice-3.9/src/drive
+      $(SRCROOT)/vice/vice-3.9/src/drive/iec
+      $(SRCROOT)/vice/vice-3.9/src/drive/iec/c64exp
+      $(SRCROOT)/vice/vice-3.9/src/drive/iec128dcr
+      $(SRCROOT)/vice/vice-3.9/src/drive/ieee
+      $(SRCROOT)/vice/vice-3.9/src/drive/tcbm
       $(SRCROOT)/vice/vice-3.9/src/iecbus
-      $(SRCROOT)/vice/vice-3.9/src/video
-      $(SRCROOT)/vice/vice-3.9/src/core
-      $(SRCROOT)/vice/vice-3.9/src/core/rtc
-      $(SRCROOT)/vice/vice-3.9/src/raster
       $(SRCROOT)/vice/vice-3.9/src/serial
       $(SRCROOT)/vice/vice-3.9/src/tape
+      $(SRCROOT)/vice/vice-3.9/src/tapeport
+      $(SRCROOT)/vice/vice-3.9/src/datasette
+      $(SRCROOT)/vice/vice-3.9/src/video
+      $(SRCROOT)/vice/vice-3.9/src/raster
+      $(SRCROOT)/vice/vice-3.9/src/core
+      $(SRCROOT)/vice/vice-3.9/src/core/rtc
       $(SRCROOT)/vice/vice-3.9/src/cartridge
       $(SRCROOT)/vice/vice-3.9/src/joyport
       $(SRCROOT)/vice/vice-3.9/src/monitor
+      $(SRCROOT)/vice/vice-3.9/src/parallel
+      $(SRCROOT)/vice/vice-3.9/src/userport
+      $(SRCROOT)/vice/vice-3.9/src/printerdrv
+      $(SRCROOT)/vice/vice-3.9/src/rs232drv
+      $(SRCROOT)/vice/vice-3.9/src/samplerdrv
+      $(SRCROOT)/vice/vice-3.9/src/diskimage
+      $(SRCROOT)/vice/vice-3.9/src/vdrive
+      $(SRCROOT)/vice/vice-3.9/src/fileio
+      $(SRCROOT)/vice/vice-3.9/src/fsdevice
+      $(SRCROOT)/vice/vice-3.9/src/imagecontents
+      $(SRCROOT)/vice/vice-3.9/src/diag
+      $(SRCROOT)/vice/vice-3.9/src/gfxoutputdrv
+      $(SRCROOT)/vice/vice-3.9/src/lib/p64
+      $(SRCROOT)/vice/vice-3.9/src/lib/md5
+      $(SRCROOT)/vice/vice-3.9/src/lib/libzmbv
+      $(SRCROOT)/vice/vice-3.9/src/hvsc
       $(SRCROOT)/vice/vice-3.9/src/arch/shared
+      $(SRCROOT)/vice/vice-3.9/src/arch/shared/hotkeys
+      $(SRCROOT)/vice/vice-3.9/src/arch/shared/sounddrv
+      $(SRCROOT)/vice/vice-3.9/src/arch/shared/hwsiddrv
+      $(SRCROOT)/vice/vice-3.9/src/arch/shared/socketdrv
+      $(SRCROOT)/vice/vice-3.9/src/lib
       $(SRCROOT)/vice/vice-3.9/src/arch/headless
-      $(SRCROOT)/vice/vice-3.9/src/resid
 
     # Minimal preprocessor defines — core VICE config lives in vice_config.h
     # NOTE: VERSION and PACKAGE_VERSION intentionally NOT here (IOKit struct member conflict)
@@ -70,54 +114,109 @@ settings:
       -Wno-unused-parameter
       -Wno-sign-compare
       -Wno-deprecated-declarations
+      -Wno-deprecated-declarations
 
-targets:
-  CFoundationMacX:
+# ── Target template ──────────────────────────────────────────────────────────
+# All source groups and settings shared by both C64 (x64) and C64SC (x64sc) targets.
+# Each machine-specific target extends this template with its VIC-II variant and
+# the four c64/*.c files that differ between x64 and x64sc.
+targetTemplates:
+  VICECoreApp:
     type: application
     platform: macOS
     deploymentTarget: "14.0"
 
-    info:
-      path: apps/cfoundation-app/Info.plist
-      properties:
-        CFBundleName: "c=foundation"
-        CFBundleDisplayName: "c=foundation"
-        CFBundleIdentifier: com.cfoundation.CFoundationMacX
-        CFBundleVersion: "1"
-        CFBundleShortVersionString: "0.1.0"
-        CFBundlePackageType: APPL
-        CFBundleExecutable: "$(EXECUTABLE_NAME)"
-        NSPrincipalClass: NSApplication
-        NSMainNibFile: ""
-        NSHighResolutionCapable: true
-        NSSupportsAutomaticGraphicsSwitching: true
-        LSApplicationCategoryType: public.app-category.games
-        NSHumanReadableCopyright: "© 2026 David Whittington. VICE © VICE Team (GPL v2)"
-
     entitlements:
       path: apps/cfoundation-app/CFoundationMacX.entitlements
 
+    settings:
+      base:
+        SWIFT_OBJC_BRIDGING_HEADER: apps/cfoundation-app/CFoundationMacX-Bridging-Header.h
+        # Fix Swift module name so both targets generate CFoundationMacX-Swift.h
+        SWIFT_MODULE_NAME: CFoundationMacX
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: ""  # set to your Team ID
+
+    postBuildScripts:
+      - name: "Copy VICE data files"
+        script: |
+          DEST="${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/vice-data"
+          mkdir -p "$DEST"
+          rsync -a --delete "${SRCROOT}/vice/vice-3.9/data/" "$DEST/"
+        outputFiles:
+          - "$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/vice-data"
+
+    dependencies:
+      - sdk: MetalKit.framework
+      - sdk: Metal.framework
+      - sdk: GameController.framework
+      - sdk: AVFoundation.framework
+      - sdk: CoreAudio.framework
+      - sdk: AudioUnit.framework
+      - sdk: AudioToolbox.framework
+      - sdk: CoreVideo.framework
+      - sdk: AppKit.framework
+      - sdk: Foundation.framework
+
     sources:
-      # Our macOS app layer
+      # Our macOS app layer (Swift + ObjC arch files, shared by all machine targets)
       - path: apps/cfoundation-app
         excludes:
           - "*.plist"
           - "*.entitlements"
           - "Resources/**"
+          - "vice_mac_sdl.c"  # replaced by vice_mac_sdl.m (ObjC for AppKit/NSEvent access)
+          - "main.c"          # replaced by main.m (ObjC for NSApplication run loop)
 
-      # VICE core C files — explicitly listed directories, source files only
-      # Root level C files
+      # VICE core C files — root level
       - path: vice/vice-3.9/src
         includes:
           - "*.c"
         excludes:
-          - "main.c"  # we have our own main.c
+          - "c1541.c"         # standalone disk image tool with its own main()
+          - "c1541-stubs.c"   # stubs for the c1541 standalone tool
+          - "6510core.c"
+          - "6510dtvcore.c"
+          - "65816core.c"
+          - "65c02core.c"
+          - "aciacore.c"
+          - "digimaxcore.c"
+          - "piacore.c"
+          - "z80core.c"
+          - "maincpu.c"       # #included by machine-specific cpu files
+          - "mainc64cpu.c"    # #included by c64/c64cpusc.c
+          - "main65816cpu.c"  # #included by c128 cpu files
+          - "mainviccpu.c"    # #included by vic20 cpu files
         createIntermediateGroups: false
 
-      # C64 machine
+      # C64 machine — common files shared by x64 and x64sc.
+      # Machine-specific files (cpu, mem, model, stubs) are added per-target below.
       - path: vice/vice-3.9/src/c64
         includes:
           - "*.c"
+        excludes:
+          # VSID standalone SID player (separate binary)
+          - "vsid.c"
+          - "vsid-resources.c"
+          - "vsid-stubs.c"
+          - "vsid-snapshot.c"
+          - "vsidcia1.c"
+          - "vsidcia2.c"
+          - "vsidsound.c"
+          - "vsidmem.c"
+          - "vsidcpu.c"
+          - "vsid*.c"
+          - "vsid-*.c"
+          # x64-specific: added back per-target
+          - "c64cpu.c"
+          - "c64mem.c"
+          - "c64model.c"
+          - "c64-stubs.c"
+          # x64sc-specific: added back per-target
+          - "c64cpusc.c"
+          - "c64memsc.c"
+          - "c64scmodel.c"
+          - "c64sc-stubs.c"
         createIntermediateGroups: false
 
       # C64 cartridge support
@@ -130,13 +229,11 @@ targets:
       - path: vice/vice-3.9/src/video
         includes:
           - "*.c"
+        excludes:
+          - "render-common.c"  # #included by render-common.h, not a standalone TU
         createIntermediateGroups: false
 
-      # VIC-II chip
-      - path: vice/vice-3.9/src/vicii
-        includes:
-          - "*.c"
-        createIntermediateGroups: false
+      # NOTE: vicii/ and viciisc/ are NOT here — added per-target to avoid symbol conflicts.
 
       # Raster engine
       - path: vice/vice-3.9/src/raster
@@ -149,16 +246,56 @@ targets:
         includes:
           - "*.c"
           - "*.cc"
+        excludes:
+          - "resid-dtv.cc"  # DTV SID wrapper — conflicts with resid.cc
         createIntermediateGroups: false
 
-      # reSID C++ engine
+      # reSID C++ engine — NEW_8580_FILTER=1 selects filter8580new.cc
       - path: vice/vice-3.9/src/resid
         includes:
           - "*.cc"
+        excludes:
+          - "filter.cc"  # conflicts with filter8580new.cc
         createIntermediateGroups: false
 
-      # Drive emulation
+      # Drive emulation — root level
       - path: vice/vice-3.9/src/drive
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Drive — IEC bus devices (1541, 1571, 1581, CMDHD)
+      - path: vice/vice-3.9/src/drive/iec
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Drive — IEC C64 expansion port (parallel cable, etc.)
+      - path: vice/vice-3.9/src/drive/iec/c64exp
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Drive — IEC128 DCR (C128 double-clock-rate drive bus)
+      - path: vice/vice-3.9/src/drive/iec128dcr
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Drive — IEEE-488 bus devices
+      - path: vice/vice-3.9/src/drive/ieee
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Drive — IEC/IEEE bridge
+      - path: vice/vice-3.9/src/drive/iecieee
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Drive — TCBM bus devices (1551 for Plus/4)
+      - path: vice/vice-3.9/src/drive/tcbm
         includes:
           - "*.c"
         createIntermediateGroups: false
@@ -205,6 +342,30 @@ targets:
           - "*.c"
         createIntermediateGroups: false
 
+      # P64 disk image support
+      - path: vice/vice-3.9/src/lib/p64
+        includes:
+          - "p64.c"
+        createIntermediateGroups: false
+
+      # MD5 hash library
+      - path: vice/vice-3.9/src/lib/md5
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # ZMBV video codec
+      - path: vice/vice-3.9/src/lib/libzmbv
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # HVSC library
+      - path: vice/vice-3.9/src/hvsc
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
       # Disk image handling
       - path: vice/vice-3.9/src/diskimage
         includes:
@@ -245,6 +406,8 @@ targets:
       - path: vice/vice-3.9/src/userport
         includes:
           - "*.c"
+        excludes:
+          - "userport_wic64.c"  # requires libcurl — Phase 7 (net2iec)
         createIntermediateGroups: false
 
       # RS-232
@@ -259,13 +422,7 @@ targets:
           - "*.c"
         createIntermediateGroups: false
 
-      # VIC-II (SuperCPU variant)
-      - path: vice/vice-3.9/src/viciisc
-        includes:
-          - "*.c"
-        createIntermediateGroups: false
-
-      # VDC (C128 video)
+      # VDC (C128 video — compiled for all machines; machine_class guards init)
       - path: vice/vice-3.9/src/vdc
         includes:
           - "*.c"
@@ -275,16 +432,59 @@ targets:
       - path: vice/vice-3.9/src/printerdrv
         includes:
           - "*.c"
-        excludes:
-          - "output-graphics.c"
         createIntermediateGroups: false
 
-      # VICE arch/shared — macOS-compatible files only
-      - path: vice/vice-3.9/src/arch/shared
+      # Filesystem device
+      - path: vice/vice-3.9/src/fsdevice
         includes:
           - "*.c"
+        createIntermediateGroups: false
+
+      # Graphics output drivers (screenshots, video capture)
+      - path: vice/vice-3.9/src/gfxoutputdrv
+        includes:
+          - "*.c"
+        excludes:
+          - "pngdrv.c"  # requires libpng — Phase 5 screenshot feature
+        createIntermediateGroups: false
+
+      # Sampler drivers
+      - path: vice/vice-3.9/src/samplerdrv
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # Diagnostics
+      - path: vice/vice-3.9/src/diag
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # arch/shared — macOS-compatible files only
+      - path: vice/vice-3.9/src/arch/shared
+        includes:
+          - "**/*.c"
           - "*.m"
         excludes:
+          # Windows-only
+          - "rs232-win32-dev.c"
+          - "dynlib-win32.c"
+          - "rawnetarch_win32.c"
+          - "archdep_is_windows_nt.c"
+          - "socketdrv/socket-win32-drv.c"
+          - "hwsiddrv/hardsid-win32-drv.c"
+          - "hwsiddrv/catweaselmkiii-win32-drv.c"
+          - "hwsiddrv/parsid-win32-drv.c"
+          # Files #included by wrappers
+          - "dynlib-unix.c"
+          - "rs232-unix-dev.c"
+          # Provided in vice_mac_sdl.m
+          - "archdep_get_vice_datadir.c"
+          # Console implementations — use arch/headless/console.c
+          - "console_unix.c"
+          - "console_none.c"
+          - "console.c"
+          # Non-macOS audio drivers
           - "sounddrv/soundalsa.c"
           - "sounddrv/soundbeos.cc"
           - "sounddrv/soundbsp.cc"
@@ -300,24 +500,119 @@ targets:
           - "sounddrv/lamelib.c"
         createIntermediateGroups: false
 
+      # Headless arch — archdep, machine UI stubs, console, kbd, mouse, uimon
+      # kbd.c excluded: vice_mac_kbd.c provides kbd_arch_* instead (full keysym lookup)
+      - path: vice/vice-3.9/src/arch/headless
+        includes:
+          - "archdep.c"
+          - "c64ui.c"
+          - "c64dtvui.c"
+          - "c64scui.c"
+          - "c128ui.c"
+          - "cbm2ui.c"
+          - "cbm5x0ui.c"
+          - "console.c"
+          - "mousedrv.c"
+          - "petui.c"
+          - "plus4ui.c"
+          - "scpu64ui.c"
+          - "uimon.c"
+          - "vic20ui.c"
+          - "vsidui.c"
+        createIntermediateGroups: false
+
+# ── Targets ───────────────────────────────────────────────────────────────────
+
+targets:
+
+  # ── C64 (x64) ──────────────────────────────────────────────────────────────
+  # Standard C64 emulation: 6510 CPU (c64cpu.c), standard VIC-II (vicii/),
+  # standard C64 memory map (c64mem.c).
+  CFoundationMacX:
+    templates: [VICECoreApp]
+
+    info:
+      path: apps/cfoundation-app/Info.plist
+      properties:
+        CFBundleName: "c=foundation"
+        CFBundleDisplayName: "c=foundation"
+        CFBundleIdentifier: com.cfoundation.CFoundationMacX
+        CFBundleVersion: "1"
+        CFBundleShortVersionString: "0.1.0"
+        CFBundlePackageType: APPL
+        CFBundleExecutable: "$(EXECUTABLE_NAME)"
+        NSPrincipalClass: NSApplication
+        NSMainNibFile: ""
+        NSHighResolutionCapable: true
+        NSSupportsAutomaticGraphicsSwitching: true
+        LSApplicationCategoryType: public.app-category.games
+        NSHumanReadableCopyright: "© 2026 David Whittington. VICE © VICE Team (GPL v2)"
+
     settings:
       base:
         PRODUCT_NAME: CFoundationMacX
-        SWIFT_OBJC_BRIDGING_HEADER: apps/cfoundation-app/CFoundationMacX-Bridging-Header.h
-        CODE_SIGN_STYLE: Automatic
-        DEVELOPMENT_TEAM: ""  # set to your Team ID
 
-    dependencies:
-      - sdk: MetalKit.framework
-      - sdk: Metal.framework
-      - sdk: GameController.framework
-      - sdk: AVFoundation.framework
-      - sdk: CoreAudio.framework
-      - sdk: AudioUnit.framework
-      - sdk: AudioToolbox.framework
-      - sdk: CoreVideo.framework
-      - sdk: AppKit.framework
-      - sdk: Foundation.framework
+    sources:
+      # VIC-II standard (x64): vicii/ defines vicii_* API for standard C64 timing
+      - path: vice/vice-3.9/src/vicii
+        includes:
+          - "*.c"
+        excludes:
+          - "viciidtv-*.c"  # C64DTV-only variants
+        createIntermediateGroups: false
+
+      # x64 machine-specific C64 files: standard CPU + standard memory map + model
+      - path: vice/vice-3.9/src/c64
+        includes:
+          - "c64cpu.c"    # 6510 implementation for x64
+          - "c64mem.c"    # standard memory map; defines machine_class = VICE_MACHINE_C64
+          - "c64model.c"  # C64 model selection (PAL/NTSC, revisions)
+          - "c64-stubs.c" # stubs for functions unused by x64
+        createIntermediateGroups: false
+
+  # ── C64SC (x64sc) ──────────────────────────────────────────────────────────
+  # Cycle-exact C64 emulation: super-cycle 6510 CPU (c64cpusc.c),
+  # cycle-exact VIC-II (viciisc/), cycle-exact memory map (c64memsc.c).
+  # Use this target for demo scene software that depends on exact VIC-II timing.
+  CFoundationC64SC:
+    templates: [VICECoreApp]
+
+    info:
+      path: apps/cfoundation-app/Info.plist
+      properties:
+        CFBundleName: "c=foundation C64SC"
+        CFBundleDisplayName: "c=foundation C64SC"
+        CFBundleIdentifier: com.cfoundation.CFoundationC64SC
+        CFBundleVersion: "1"
+        CFBundleShortVersionString: "0.1.0"
+        CFBundlePackageType: APPL
+        CFBundleExecutable: "$(EXECUTABLE_NAME)"
+        NSPrincipalClass: NSApplication
+        NSMainNibFile: ""
+        NSHighResolutionCapable: true
+        NSSupportsAutomaticGraphicsSwitching: true
+        LSApplicationCategoryType: public.app-category.games
+        NSHumanReadableCopyright: "© 2026 David Whittington. VICE © VICE Team (GPL v2)"
+
+    settings:
+      base:
+        PRODUCT_NAME: CFoundationC64SC
+
+    sources:
+      # VIC-II cycle-exact (x64sc): viciisc/ defines vicii_* API with cycle-exact timing
+      - path: vice/vice-3.9/src/viciisc
+        includes:
+          - "*.c"
+        createIntermediateGroups: false
+
+      # x64sc machine-specific C64 files: cycle-exact CPU + cycle-exact memory map + model
+      - path: vice/vice-3.9/src/c64
+        includes:
+          - "c64cpusc.c"    # super-cycle 6510 implementation for x64sc
+          - "c64memsc.c"    # cycle-exact memory map; defines machine_class = VICE_MACHINE_C64SC
+          - "c64scmodel.c"  # C64SC model selection
+          - "c64sc-stubs.c" # stubs for functions unused by x64sc
+        createIntermediateGroups: false
 
 schemes:
   CFoundationMacX:
@@ -327,6 +622,22 @@ schemes:
     run:
       config: Debug
       executable: CFoundationMacX
+    test:
+      config: Debug
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release
+
+  CFoundationC64SC:
+    build:
+      targets:
+        CFoundationC64SC: all
+    run:
+      config: Debug
+      executable: CFoundationC64SC
     test:
       config: Debug
     profile:

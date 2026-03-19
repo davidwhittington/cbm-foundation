@@ -6,6 +6,7 @@
 //   [SwiftUIPanelCoordinator.shared showPreferences];
 //   [SwiftUIPanelCoordinator.shared showAboutBox];
 
+import AppKit
 import SwiftUI
 
 @objc
@@ -13,13 +14,48 @@ final class SwiftUIPanelCoordinator: NSObject {
 
     @objc static let shared = SwiftUIPanelCoordinator()
 
-    private let prefsModel = VICEPreferenceModel()
+    private let prefsModel  = VICEPreferenceModel()
+    private let statusModel = VICEStatusModel()
+
     private var prefsWindow: NSWindow?
     private var machineSelectorWindow: NSWindow?
     private var mediaManagerWindow: NSWindow?
     private var aboutBoxWindow: NSWindow?
 
     private override init() { super.init() }
+
+    // MARK: - Startup
+
+    /// Load persisted preferences, apply them to VICE core, and wire the
+    /// status bar into the emulator window.
+    /// Called once from AppDelegate after the VICE thread is running.
+    @objc func applyStartupPreferences() {
+        prefsModel.load()
+        prefsModel.applyToVICECore()
+        setupStatusBar()
+    }
+
+    private func setupStatusBar() {
+        let bridge = VICEStatusBridge.shared()
+
+        bridge.driveLEDHandler = { [weak self] (unit: Int, pwm: Int) in
+            guard unit >= 0 && unit < 4 else { return }
+            self?.statusModel.driveLED[unit] = pwm > 0
+        }
+
+        bridge.driveTrackHandler = { [weak self] (unit: Int, halfTrack: Int) in
+            guard unit >= 0 && unit < 4 else { return }
+            self?.statusModel.driveTrack[unit] = Double(halfTrack)
+        }
+
+        guard let window = bridge.emulatorWindow else { return }
+
+        let hostingView = NSHostingView(rootView: VICEStatusBarView(model: statusModel))
+        let accessoryVC = NSTitlebarAccessoryViewController()
+        accessoryVC.view            = hostingView
+        accessoryVC.layoutAttribute = .bottom
+        window.addTitlebarAccessoryViewController(accessoryVC)
+    }
 
     // MARK: - Preferences
 
@@ -85,5 +121,30 @@ final class SwiftUIPanelCoordinator: NSObject {
             aboutBoxWindow = window
         }
         aboutBoxWindow?.makeKeyAndOrderFront(nil)
+    }
+}
+
+// MARK: - About Box View
+
+struct AboutBoxView: View {
+    var body: some View {
+        VStack(spacing: 16) {
+            Text("c=foundation")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+            Text("Commodore Emulator for macOS")
+                .foregroundStyle(.secondary)
+            Divider()
+            Text("Built on VICE 3.9")
+                .font(.caption)
+            Text("VICE © VICE Team — GPL v2")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Text("macOS app © 2026 David Whittington")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding(32)
+        .frame(width: 400, height: 280)
     }
 }

@@ -1,0 +1,63 @@
+name: Feature Request
+description: Suggest a new capability or enhancement
+title: "[FEATURE] "
+labels: ["type: feature", "status: needs-spec"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Fill in as much detail as you have. Incomplete requests are fine.
+        Open a Discussion issue if you just have an idea and need to think it through first.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: What should be built?
+      description: One or two sentences. What is this and what does it do?
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Why does this matter?
+      description: Who benefits and how? What problem does it solve or what opportunity does it unlock?
+    validations:
+      required: true
+
+  - type: textarea
+    id: detail
+    attributes:
+      label: Detail / acceptance criteria
+      description: |
+        What does "done" look like? List behaviours, edge cases, or constraints that matter.
+        Leave blank if you do not know yet — that is what needs-spec is for.
+
+  - type: dropdown
+    id: effort
+    attributes:
+      label: Estimated effort
+      options:
+        - "Low — a few hours"
+        - "Medium — a day or two"
+        - "High — a week or more"
+        - "Unknown"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Estimated impact
+      options:
+        - "High — core to the experience"
+        - "Medium — meaningfully improves the project"
+        - "Low — nice to have"
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Links, prior art, related issues, or design docs.

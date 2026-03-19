@@ -23,4 +23,11 @@ void vice_mac_kbd_init(void);
  */
 void vice_mac_key_event(uint16_t macKeyCode, uint32_t modifiers, int down);
 
+/**
+ * Deliver a modifier-key FlagsChanged event to VICE.
+ * Determines press vs release by checking whether the modifier flag
+ * corresponding to macKeyCode is set in the current modifiers bitmask.
+ */
+void vice_mac_modifier_event(uint16_t macKeyCode, uint32_t modifiers);
+
 #endif /* VICE_MAC_KBD_H */
