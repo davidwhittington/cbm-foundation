@@ -10,7 +10,7 @@
 
 #import "AppDelegate.h"
 #import "VICEEngine.h"
-#import "CFoundationMacX-Swift.h"  /* Swift-generated ObjC interface */
+#import "CBMFoundationMacOS-Swift.h"  /* Swift-generated ObjC interface */
 
 @implementation AppDelegate
 

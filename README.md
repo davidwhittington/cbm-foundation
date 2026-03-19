@@ -32,13 +32,13 @@ c=foundation wraps the VICE C emulation core in a modern native macOS app:
 git clone https://github.com/davidwhittington/cbm-foundation
 cd cbm-foundation
 xcodegen generate
-open CFoundationMacX.xcodeproj
+open CBMFoundationMacOS.xcodeproj
 ```
 
-Build the `CFoundationMacX` scheme in Xcode, or from the command line:
+Build the `CBMFoundationMacOS` scheme in Xcode, or from the command line:
 
 ```bash
-xcodebuild -scheme CFoundationMacX -configuration Debug build
+xcodebuild -scheme CBMFoundationMacOS -configuration Debug build
 ```
 
 **Optional runtime dependencies** (not required to build):
@@ -50,8 +50,8 @@ xcodebuild -scheme CFoundationMacX -configuration Debug build
 
 | Machine | Target | Status |
 |---------|--------|--------|
-| Commodore 64 | `CFoundationMacX` | Running |
-| Commodore 64 (cycle-exact) | `CFoundationC64SC` | Running |
+| Commodore 64 | `CBMFoundationMacOS` | Running |
+| Commodore 64 (cycle-exact) | `CBMFoundationC64SC` | Running |
 | Commodore 128 | — | Planned |
 | VIC-20 | — | Planned |
 | PET | — | Planned |
@@ -60,7 +60,7 @@ xcodebuild -scheme CFoundationMacX -configuration Debug build
 ## Repo Layout
 
 ```
-apps/cfoundation-app/   macOS app layer (Swift + ObjC + C arch layer)
+app/   macOS app layer (Swift + ObjC + C arch layer)
 vice/vice-3.9/          VICE 3.9 source tree (unmodified, GPLv2)
 scripts/                Build and release scripts
 docs/                   Architecture notes and modernization blueprint
@@ -97,4 +97,4 @@ Filesystem/repo: `cbm-foundation`
 VICE is licensed under the GNU General Public License v2.
 The cbm-foundation app layer (new code in `apps/`) is copyright David Whittington.
 The combined work, when distributed, is subject to GPL v2.
-See `apps/cfoundation-app/Resources/COPYING` for the GPL v2 text.
+See `app/Resources/COPYING` for the GPL v2 text.

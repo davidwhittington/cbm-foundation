@@ -1,11 +1,11 @@
-name: CFoundationMacX
+name: CBMFoundationMacOS
 options:
-  bundleIdPrefix: com.cfoundation
+  bundleIdPrefix: com.cbmfoundation
   deploymentTarget:
     macOS: "14.0"
   xcodeVersion: "16.0"
   generateEmptyDirectories: true
-  postGenCommand: echo "✓ CFoundationMacX.xcodeproj generated"
+  postGenCommand: echo "✓ CBMFoundationMacOS.xcodeproj generated"
 
 settings:
   base:
@@ -22,7 +22,7 @@ settings:
     # Our app dir comes first so config.h symlink wins over any generated config.h.
     # All VICE subdirectory headers included (excludes arch/gtk3 and arch/sdl).
     HEADER_SEARCH_PATHS: >-
-      $(SRCROOT)/apps/cfoundation-app
+      $(SRCROOT)/app
       $(SRCROOT)/vice/vice-3.9/src
       $(SRCROOT)/vice/vice-3.9/src/c64
       $(SRCROOT)/vice/vice-3.9/src/c64/cart
@@ -110,7 +110,7 @@ settings:
     # C++ files (resid/*.cc): force-include config.h so VERSION is defined.
     # These files don't include system frameworks, so no IOKit conflict.
     OTHER_CPLUSPLUSFLAGS: >-
-      -include $(SRCROOT)/apps/cfoundation-app/config.h
+      -include $(SRCROOT)/app/config.h
       -Wno-unused-parameter
       -Wno-sign-compare
       -Wno-deprecated-declarations
@@ -133,13 +133,13 @@ targetTemplates:
     deploymentTarget: "14.0"
 
     entitlements:
-      path: apps/cfoundation-app/CFoundationMacX.entitlements
+      path: app/CBMFoundationMacOS.entitlements
 
     settings:
       base:
-        SWIFT_OBJC_BRIDGING_HEADER: apps/cfoundation-app/CFoundationMacX-Bridging-Header.h
-        # Fix Swift module name so both targets generate CFoundationMacX-Swift.h
-        SWIFT_MODULE_NAME: CFoundationMacX
+        SWIFT_OBJC_BRIDGING_HEADER: app/CBMFoundationMacOS-Bridging-Header.h
+        # Fix Swift module name so both targets generate CBMFoundationMacOS-Swift.h
+        SWIFT_MODULE_NAME: CBMFoundationMacOS
         CODE_SIGN_STYLE: Automatic
         DEVELOPMENT_TEAM: ""  # set to your Team ID
 
@@ -174,19 +174,13 @@ targetTemplates:
           fi
 
     sources:
-      # macOS app layer — Swift + ObjC + C arch files
-      - path: apps/cfoundation-app
+      - path: app
         excludes:
           - "*.plist"
           - "*.entitlements"
           - "Resources/**"
           - "vice_mac_sdl.c"  # replaced by vice_mac_sdl.m
           - "main.c"          # replaced by main.m
-
-      # New download/setup layer
-      - path: apps/cbm-foundation-app
-        excludes:
-          - "*.plist"
 
       # VICE core C files — NOTE: No longer compiled here.
       # VICE is built separately into libvice.dylib via scripts/build_vice_dylib.sh
@@ -217,15 +211,15 @@ targets:
   # ── C64 (x64) ──────────────────────────────────────────────────────────────
   # Standard C64 emulation: 6510 CPU (c64cpu.c), standard VIC-II (vicii/),
   # standard C64 memory map (c64mem.c).
-  CFoundationMacX:
+  CBMFoundationMacOS:
     templates: [VICECoreApp]
 
     info:
-      path: apps/cfoundation-app/Info.plist
+      path: app/Info.plist
       properties:
         CFBundleName: "c=foundation"
         CFBundleDisplayName: "c=foundation"
-        CFBundleIdentifier: com.cfoundation.CFoundationMacX
+        CFBundleIdentifier: com.cbmfoundation.CBMFoundationMacOS
         CFBundleVersion: "1"
         CFBundleShortVersionString: "0.1.0"
         CFBundlePackageType: APPL
@@ -239,21 +233,21 @@ targets:
 
     settings:
       base:
-        PRODUCT_NAME: CFoundationMacX
+        PRODUCT_NAME: CBMFoundationMacOS
 
   # ── C64SC (x64sc) ──────────────────────────────────────────────────────────
   # Cycle-exact C64 emulation: super-cycle 6510 CPU (c64cpusc.c),
   # cycle-exact VIC-II (viciisc/), cycle-exact memory map (c64memsc.c).
   # Use this target for demo scene software that depends on exact VIC-II timing.
-  CFoundationC64SC:
+  CBMFoundationC64SC:
     templates: [VICECoreApp]
 
     info:
-      path: apps/cfoundation-app/Info.plist
+      path: app/Info.plist
       properties:
         CFBundleName: "c=foundation C64SC"
         CFBundleDisplayName: "c=foundation C64SC"
-        CFBundleIdentifier: com.cfoundation.CFoundationC64SC
+        CFBundleIdentifier: com.cbmfoundation.CBMFoundationC64SC
         CFBundleVersion: "1"
         CFBundleShortVersionString: "0.1.0"
         CFBundlePackageType: APPL
@@ -267,17 +261,17 @@ targets:
 
     settings:
       base:
-        PRODUCT_NAME: CFoundationC64SC
+        PRODUCT_NAME: CBMFoundationC64SC
 
 
 schemes:
-  CFoundationMacX:
+  CBMFoundationMacOS:
     build:
       targets:
-        CFoundationMacX: all
+        CBMFoundationMacOS: all
     run:
       config: Debug
-      executable: CFoundationMacX
+      executable: CBMFoundationMacOS
     test:
       config: Debug
     profile:
@@ -287,13 +281,13 @@ schemes:
     archive:
       config: Release
 
-  CFoundationC64SC:
+  CBMFoundationC64SC:
     build:
       targets:
-        CFoundationC64SC: all
+        CBMFoundationC64SC: all
     run:
       config: Debug
-      executable: CFoundationC64SC
+      executable: CBMFoundationC64SC
     test:
       config: Debug
     profile:

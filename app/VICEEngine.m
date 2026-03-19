@@ -90,7 +90,7 @@
 
     // Build a minimal argv. The machine class is determined at compile time
     // in Phase 1 (C64 only). Future phases will support multiple machine binaries.
-    char *argv[] = { "cfoundation", NULL };
+    char *argv[] = { "cbmfoundation", NULL };
     int argc = 1;
 
     // main_program() initialises all VICE subsystems, then spawns the VICE

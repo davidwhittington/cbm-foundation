@@ -10,7 +10,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$SCRIPT_DIR/.."
 VICE_DATA="$ROOT/vice/src/data"
-DEST="$ROOT/apps/cfoundation-app/Resources/vice-data"
+DEST="$ROOT/apps/cbm-foundation-app/Resources/vice-data"
 
 if [ ! -d "$VICE_DATA" ]; then
     echo "Error: vice/src/data not found. Run 'git submodule update' or copy VICE source to vice/."

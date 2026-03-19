@@ -89,7 +89,7 @@ runtime so no install is required at build time; the app degrades gracefully whe
   `applyToVICECore()` enables or disables physical drive based on prefs.
 - `PreferencesView.swift` — Drive tab gets a "Physical Drive (ZoomFloppy / XUM1541)"
   section with toggle, unit picker, and live status indicator.
-- `CFoundationMacX-Bridging-Header.h` — adds `#import "PhysDrvManager.h"`.
+- `CBMFoundationMacOS-Bridging-Header.h` — adds `#import "PhysDrvManager.h"`.
 - `project.yml` — adds `src/lib` to header search paths.
 
 ### Added — Phase 7: net2iec / Meatloaf TCP bridge
@@ -123,7 +123,7 @@ binary framed protocol.
   on `netIECEnabled` preference.
 - `PreferencesView.swift` — Network tab upgraded with host/port fields, live status
   indicator, and "Connect Now" button.
-- `CFoundationMacX-Bridging-Header.h` — adds `Net2IECManager.h` import so Swift can
+- `CBMFoundationMacOS-Bridging-Header.h` — adds `Net2IECManager.h` import so Swift can
   read connection state.
 
 ---
@@ -144,21 +144,21 @@ directory (`vicii/` vs `viciisc/`).
 
 - Extracted `targetTemplates.VICECoreApp`: ~380 lines of shared VICE source configuration
   (all source groups except vicii/, viciisc/, and the machine-specific c64 files).
-- `CFoundationMacX` (x64): template + `vicii/` + `{c64cpu, c64mem, c64model, c64-stubs}.c`
-- `CFoundationC64SC` (x64sc): template + `viciisc/` + `{c64cpusc, c64memsc, c64scmodel, c64sc-stubs}.c`
-- `SWIFT_MODULE_NAME: CFoundationMacX` added to template so both targets generate
-  `CFoundationMacX-Swift.h` (avoids AppDelegate.m import mismatch).
-- Added `CFoundationC64SC` scheme with its own run/archive configuration.
+- `CBMFoundationMacOS` (x64): template + `vicii/` + `{c64cpu, c64mem, c64model, c64-stubs}.c`
+- `CBMFoundationC64SC` (x64sc): template + `viciisc/` + `{c64cpusc, c64memsc, c64scmodel, c64sc-stubs}.c`
+- `SWIFT_MODULE_NAME: CBMFoundationMacOS` added to template so both targets generate
+  `CBMFoundationMacOS-Swift.h` (avoids AppDelegate.m import mismatch).
+- Added `CBMFoundationC64SC` scheme with its own run/archive configuration.
 
-**`apps/cfoundation-app/VICEEngine.h/.m`:**
+**`app/VICEEngine.h/.m`:**
 
 - `+compiledMachineClass` class method: reads VICE's `machine_class` global at runtime
   (defined in `c64mem.c` as `VICE_MACHINE_C64 = 1` for x64;
   in `c64memsc.c` as `VICE_MACHINE_C64SC = 256` for x64sc). No compile-time defines
   needed — the correct value is determined purely by which source files were linked.
 
-**Result:** `xcodebuild BUILD SUCCEEDED` for both `CFoundationMacX` (x64) and
-`CFoundationC64SC` (x64sc) on arm64. Each builds to a standalone .app containing
+**Result:** `xcodebuild BUILD SUCCEEDED` for both `CBMFoundationMacOS` (x64) and
+`CBMFoundationC64SC` (x64sc) on arm64. Each builds to a standalone .app containing
 VICE 3.9 C core + full Swift/ObjC UI shell. x64sc uses the cycle-exact VIC-II
 implementation (`viciisc/`) which models every clock cycle of the original chip.
 
@@ -170,7 +170,7 @@ implementation (`viciisc/`) which models every clock cycle of the original chip.
 preferences panel, and Metal video settings wired to UserDefaults at startup and after
 each Preferences close.
 
-**Pause (`apps/cfoundation-app/vice_mac_sdl.m`):**
+**Pause (`app/vice_mac_sdl.m`):**
 
 - Replaced stub `ui_pause_active/enable/disable/loop_iteration` with real implementation:
   - `is_paused` volatile flag shared between main thread (toggle) and VICE thread (loop).
@@ -182,28 +182,28 @@ each Preferences close.
   - Added `#include "vsync.h"` and `#include "archdep_tick.h"` for `vsync_on_vsync_do`,
     `TICK_PER_SECOND`, and `mainlock_yield_and_sleep`.
 
-**VICEEngine.m (`apps/cfoundation-app/VICEEngine.m`):**
+**VICEEngine.m (`app/VICEEngine.m`):**
 
 - `setPauseEnabled:` wired to `ui_pause_enable()` / `ui_pause_disable()`.
 
-**Metal video settings bridges (`apps/cfoundation-app/VICEMetalView.h/.m`):**
+**Metal video settings bridges (`app/VICEMetalView.h/.m`):**
 
 - Added four new C bridge functions (declared in header, implemented in `.m`):
   `Vice_MetalSetBrightness`, `Vice_MetalSetSaturation`, `Vice_MetalSetContrast`,
   `Vice_MetalSetCRTCurvature`. These are callable from Swift via the bridging header.
 
-**Preference wiring (`apps/cfoundation-app/PreferenceModel.swift`):**
+**Preference wiring (`app/PreferenceModel.swift`):**
 
 - `applyToVICECore()` now calls `applyMetalSettings()` after setting VICE resources.
 - `applyMetalSettings()` (new): pushes scanlines, CRT curvature, brightness, saturation,
   contrast, and linear filter to the Metal renderer via the C bridge functions.
 
-**Startup preferences (`apps/cfoundation-app/SwiftUIPanelCoordinator.swift`):**
+**Startup preferences (`app/SwiftUIPanelCoordinator.swift`):**
 
 - `applyStartupPreferences()` (new `@objc` method): calls `prefsModel.load()` then
   `applyToVICECore()`. Called from AppDelegate after the VICE thread is running.
 
-**NSMenu bar + actions (`apps/cfoundation-app/AppDelegate.m`):**
+**NSMenu bar + actions (`app/AppDelegate.m`):**
 
 - `buildMenuBar()` constructs the full application menu bar:
   - **c=foundation** menu: About, Preferences…, Services, Hide, Hide Others, Show All, Quit.
@@ -230,7 +230,7 @@ to the Metal renderer at startup and after each Preferences panel close.
 **Goal:** Physical keyboard and MFi/GameController joystick input reach the VICE
 emulation core.
 
-**Keyboard (`apps/cfoundation-app/vice_mac_kbd.c`):**
+**Keyboard (`app/vice_mac_kbd.c`):**
 
 - Fixed NSEvent modifier flag bit positions: Shift=`1<<17`, Control=`1<<18`,
   Option/Alt=`1<<19`. Previous code had Control at `1<<12` and Alt at `1<<11`
@@ -239,7 +239,7 @@ emulation core.
 - Fixed cursor key mappings: Right/Up/Down now consistently use their correct
   X11 keysym values (matching VHK_KEY_Right/Up/Down = 0xff53/52/54).
 
-**Joystick (`apps/cfoundation-app/vice_mac_joystick.h/.m`, new):**
+**Joystick (`app/vice_mac_joystick.h/.m`, new):**
 
 - `vice_mac_joystick.m` — GameController framework integration:
   - `vice_mac_joystick_init()`: registers `GCControllerDidConnectNotification` and
@@ -257,13 +257,13 @@ emulation core.
     `memory_order_relaxed`; VICE thread reads with the same order — safe because the
     worst case is a one-frame stale input, not corruption.
 
-**Wiring (`apps/cfoundation-app/vice_mac_sdl.m`):**
+**Wiring (`app/vice_mac_sdl.m`):**
 
 - `ui_init_finalize()`: now calls `vice_mac_kbd_init()` and `vice_mac_joystick_init()`.
 - `vsyncarch_presync()`: now calls `vice_mac_joystick_poll()` after event processing.
 - `vice_mac_ui_shutdown()`: now calls `vice_mac_joystick_shutdown()` before Metal teardown.
 
-**VICEEngine.m (`apps/cfoundation-app/VICEEngine.m`):**
+**VICEEngine.m (`app/VICEEngine.m`):**
 
 - `keyDown:modifiers:` / `keyUp:modifiers:` activated; call `vice_mac_key_event()`
   directly (path used by future SwiftUI key injection; NSEvent path in
@@ -279,13 +279,13 @@ are fully wired to the VICE emulation core.
 **Goal:** Each frame rendered by the VICE emulation thread is converted from 8bpp
 palettized format to ARGB8888 and displayed via Metal.
 
-**`apps/cfoundation-app/videoarch.h`:**
+**`app/videoarch.h`:**
 
 - Added `argb_buffer` (`uint32_t *`) and `argb_pitch` (`unsigned int`) to
   `video_canvas_s`. These are the ARGB8888 render target that VICE's
   `video_canvas_render()` writes into. `#include <stdint.h>` added for `uint32_t`.
 
-**`apps/cfoundation-app/vice_mac_sdl.m`:**
+**`app/vice_mac_sdl.m`:**
 
 - Added `#include "palette.h"` and `#include "video.h"` for `palette_t`,
   `video_canvas_render()`, `video_render_setphysicalcolor()`, `video_render_setrawrgb()`,
@@ -320,7 +320,7 @@ to screen with optional scanline/CRT effects.
 **Goal:** Get AppKit running the event loop, NSWindow on screen, Metal view installed,
 and the VICE emulation thread alive.
 
-**App lifecycle (`apps/cfoundation-app/`):**
+**App lifecycle (`app/`):**
 
 - `main.m` (new): ObjC entry point; creates `NSApplication`, assigns `AppDelegate` as
   delegate, calls `[app run]`. Replaces `main.c` which previously called `main_program()`
@@ -343,7 +343,7 @@ and the VICE emulation thread alive.
   - Added stubs: `main_exit()` (dispatches `[NSApp terminate:nil]`), `ui_init_with_args()`
     (no-op), `video_init()` (returns 0).
 
-**Metal frame pipeline (`apps/cfoundation-app/`):**
+**Metal frame pipeline (`app/`):**
 
 - `VICEMetalView.m`: Added `Vice_MetalViewSetDisplayManager()` C bridge; wires
   `[VICEDisplayManager sharedManager].metalView = gMetalView` so that
@@ -398,7 +398,7 @@ AppKit run loop drives Metal rendering.
   - `gfxoutputdrv/pngdrv.c` (requires libpng — Phase 5)
   - Non-macOS audio drivers, Windows-only arch/shared files
 
-**macOS arch layer (`apps/cfoundation-app/`):**
+**macOS arch layer (`app/`):**
 
 - `videoarch.h` (new): macOS arch `video_canvas_s` struct definition with all fields
   required by VICE core — `initialized`, `created`, `index`, `depth`, `width/height`,
@@ -415,8 +415,8 @@ AppKit run loop drives Metal rendering.
 - `vice_mac_kbd.c`: keyboard matrix translation using `VHK_KEY_*` constants from
   `vhkkeysyms.h`; macOS hardware key codes to VICE key symbols via 256-entry table
 
-**Result:** `xcodebuild` reports `BUILD SUCCEEDED`. arm64 binary: `CFoundationMacX`
-(55K launcher) + `CFoundationMacX.debug.dylib` (5.7M VICE core).
+**Result:** `xcodebuild` reports `BUILD SUCCEEDED`. arm64 binary: `CBMFoundationMacOS`
+(55K launcher) + `CBMFoundationMacOS.debug.dylib` (5.7M VICE core).
 
 ---
 
@@ -426,9 +426,9 @@ AppKit run loop drives Metal rendering.
 hardware, modeled on the fuji-foundation / Atari800MacX pattern. It is the foundation app in
 the cbm-* suite (cbm-foundation, cbm-swift, cbm-vision, cbm-dynasty).
 
-**`apps/cfoundation-app/` — macOS app layer (Phase 1–5 scaffold):**
+**`app/` — macOS app layer (Phase 1–5 scaffold):**
 
-- `CFoundationApp.swift` — minimal Swift entry point, AppKit app lifecycle
+- `CBMFoundationApp.swift` — minimal Swift entry point, AppKit app lifecycle
 - `main.c` — C entry point calling `main_program()` (VICE core init)
 - `vice_mac_sdl.c/.h` — macOS arch layer replacing `vice/src/arch/sdl/` entirely;
   implements `archdep_init()`, `video_canvas_create()`, `video_canvas_refresh()`
@@ -454,12 +454,12 @@ the cbm-* suite (cbm-foundation, cbm-swift, cbm-vision, cbm-dynasty).
   bootstrapped from `./configure --without-gtk3 --with-sdl2` on macOS
 - `archdep.h` — macOS arch dependency header
 - `resid-config.h` — reSID compile-time configuration
-- `CFoundationMacX-Bridging-Header.h` — Swift/ObjC bridging header
-- `CFoundationMacX.entitlements` — app sandbox entitlements
+- `CBMFoundationMacOS-Bridging-Header.h` — Swift/ObjC bridging header
+- `CBMFoundationMacOS.entitlements` — app sandbox entitlements
 
-**`CFoundationMacX.xcodeproj` / `project.yml` (XcodeGen):**
+**`CBMFoundationMacOS.xcodeproj` / `project.yml` (XcodeGen):**
 
-- Single app target `CFoundationMacX`, macOS 14.0, Swift 5.9
+- Single app target `CBMFoundationMacOS`, macOS 14.0, Swift 5.9
 - VICE 3.9 C core compiled directly from `vice/vice-3.9/src/` — no autoconf,
   no SDL dependency; arch/sdl entirely replaced by our macOS layer
 - Frameworks: MetalKit, Metal, GameController, AVFoundation, CoreAudio,

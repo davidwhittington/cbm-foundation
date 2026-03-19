@@ -36,7 +36,7 @@
     if (self) {
         _state = Net2IECStateDisconnected;
         _sock  = -1;
-        _connectQueue = dispatch_queue_create("com.cfoundation.net2iec.connect",
+        _connectQueue = dispatch_queue_create("com.cbmfoundation.net2iec.connect",
                                               DISPATCH_QUEUE_SERIAL);
     }
     return self;

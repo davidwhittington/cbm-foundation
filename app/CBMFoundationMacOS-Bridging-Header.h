@@ -1,4 +1,4 @@
-/* CFoundationMacX-Bridging-Header.h
+/* CBMFoundationMacOS-Bridging-Header.h
  * Swift/ObjC bridging header.
  * Import ObjC headers that Swift code needs to access.
  * Swift files (SwiftUIPanelCoordinator, PreferenceModel, etc.) do NOT go here —
