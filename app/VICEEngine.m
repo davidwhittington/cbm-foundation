@@ -38,13 +38,11 @@
 }
 
 + (VICEMachineModel)compiledMachineClass {
-    /* machine_class is a global int defined in the machine's C source file:
-     *   c64.c        → VICE_MACHINE_C64   (1<<0 = 1)
-     *   c64memsc.c   → VICE_MACHINE_C64SC (1<<8 = 256)
-     * Reading it at runtime means no compile-time defines are needed.
-     */
-    extern int machine_class;
-    switch (machine_class) {
+    /* machine_class lives in libvice.dylib — resolve via dlsym so dyld doesn't
+     * try to bind it at launch before the library is loaded. */
+    int *mc = (int *)dlsym(RTLD_DEFAULT, "machine_class");
+    if (!mc) return VICEMachineModelC64;
+    switch (*mc) {
         case (1 << 0): return VICEMachineModelC64;
         case (1 << 8): return VICEMachineModelC64SC;
         default:       return VICEMachineModelC64;
@@ -54,13 +52,16 @@
 // MARK: - Library loading
 
 + (BOOL)loadVICELibrary:(NSError **)error {
-    // Resolve the library path: Application Support first, then app bundle fallback.
-    NSArray<NSString *> *candidates = @[
-        [NSString stringWithFormat:@"%@/cbm-foundation/libvice.dylib",
-            NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
-                                               NSUserDomainMask, YES).firstObject],
-        [[NSBundle mainBundle] pathForResource:@"libvice" ofType:@"dylib"],
-    ];
+    NSMutableArray<NSString *> *candidates = [NSMutableArray array];
+
+    NSString *appSupport = NSSearchPathForDirectoriesInDomains(
+        NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject;
+    if (appSupport)
+        [candidates addObject:[appSupport stringByAppendingPathComponent:@"cbm-foundation/libvice.dylib"]];
+
+    NSString *bundled = [[NSBundle mainBundle] pathForResource:@"libvice" ofType:@"dylib"];
+    if (bundled)
+        [candidates addObject:bundled];
 
     for (NSString *path in candidates) {
         if (!path || ![[NSFileManager defaultManager] fileExistsAtPath:path]) continue;

@@ -12,23 +12,29 @@
 #import "VICEEngine.h"
 #import "CBMFoundationMacOS-Swift.h"  /* Swift-generated ObjC interface */
 
-@implementation AppDelegate
+@implementation AppDelegate {
+    BOOL _viceRunning;
+}
 
 // MARK: - Lifecycle
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
     [self buildMenuBar];
 
-    // Check for libvice.dylib. If missing, show the SwiftUI setup sheet first.
-    NSError *libError = nil;
-    if (![VICEEngine loadVICELibrary:&libError]) {
-        [self showSetupSheetWithCompletion:^{
-            [self startVICEOrQuit];
-        }];
-        return;
-    }
-
-    [self startVICEOrQuit];
+    // Activate and yield to the run loop before showing any window,
+    // so NSApp is fully ready to present UI.
+    [NSApp activateIgnoringOtherApps:YES];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSError *libError = nil;
+        if (![VICEEngine loadVICELibrary:&libError]) {
+            NSLog(@"libvice.dylib not found (%@), showing setup", libError.localizedDescription);
+            [self showSetupSheetWithCompletion:^{
+                [self startVICEOrQuit];
+            }];
+            return;
+        }
+        [self startVICEOrQuit];
+    });
 }
 
 - (void)startVICEOrQuit {
@@ -45,46 +51,47 @@
 
     /* Apply persisted preferences to VICE core and Metal renderer.
      * Called after main_program() so all VICE resources are registered. */
+    _viceRunning = YES;
     [SwiftUIPanelCoordinator.shared applyStartupPreferences];
 }
 
 - (void)showSetupSheetWithCompletion:(void (^)(void))completion {
-    // Present CBMSetupView as a sheet on the main window.
-    // The view calls dismiss when the library is ready; we re-attempt start then.
-    NSWindow *mainWindow = [NSApp mainWindow] ?: [NSApp windows].firstObject;
-    if (!mainWindow) {
-        // No window yet — create a minimal one to host the sheet
-        mainWindow = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 1, 1)
-                                                 styleMask:NSWindowStyleMaskBorderless
-                                                   backing:NSBackingStoreBuffered
-                                                     defer:NO];
-        [mainWindow center];
-        [mainWindow makeKeyAndOrderFront:nil];
-    }
-
-    NSViewController *vc = [SwiftUIPanelCoordinator setupViewController];
-    [mainWindow beginSheet:[vc.view window] ?: NSWindow.new completionHandler:^(NSModalResponse response) {
-        if (completion) completion();
-    }];
-
-    // Simpler path: use a hosting window directly
     NSViewController *setupVC = [SwiftUIPanelCoordinator setupViewController];
-    NSWindow *setupWindow = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 480, 300)
-                                                        styleMask:NSWindowStyleMaskTitled
-                                                          backing:NSBackingStoreBuffered
-                                                            defer:NO];
+
+    NSWindow *setupWindow = [[NSWindow alloc]
+        initWithContentRect:NSMakeRect(0, 0, 480, 420)
+                  styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable
+                    backing:NSBackingStoreBuffered
+                      defer:NO];
     setupWindow.contentViewController = setupVC;
-    setupWindow.title = @"cbm-foundation Setup";
+    setupWindow.title = @"c=foundation Setup";
+    setupWindow.releasedWhenClosed = NO;
+    setupWindow.delegate = self;
     [setupWindow center];
+    [setupWindow makeKeyAndOrderFront:nil];
 
-    [NSApp runModalForWindow:setupWindow];
-    [setupWindow close];
+    self.setupCompletion = completion;
+    self.setupWindow = setupWindow;
+}
 
-    if (completion) completion();
+- (void)windowWillClose:(NSNotification *)notification {
+    if (notification.object != self.setupWindow) return;
+    self.setupWindow = nil;
+    void (^completion)(void) = self.setupCompletion;
+    self.setupCompletion = nil;
+    // Only proceed if the library actually landed — otherwise the user closed/quit setup
+    NSError *libError = nil;
+    if ([VICEEngine loadVICELibrary:&libError] && completion) {
+        completion();
+    } else {
+        [NSApp terminate:nil];
+    }
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
-    return YES;
+    // Don't quit when setup window closes — we open the emulator window right after.
+    // Once VICE is running, the emulator window closing should quit.
+    return _viceRunning;
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification {

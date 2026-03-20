@@ -69,7 +69,8 @@ struct CBMSetupView: View {
             if case .installed = newState {
                 lib.loadLibrary()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                    dismiss()
+                    // Close the hosting window — AppDelegate.windowWillClose fires the completion
+                    NSApp.keyWindow?.close()
                 }
             }
         }

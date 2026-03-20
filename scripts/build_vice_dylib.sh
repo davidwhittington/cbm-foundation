@@ -34,32 +34,28 @@ fi
 
 mkdir -p "$BUILD_DIR/arm64" "$BUILD_DIR/x86_64" "$DIST_DIR"
 
-# Source file list — mirrors project.yml exactly
-VICE_SRCS=$(cd "$VICE_SRC/src" && find \
-    . \
-    c64 c64/cart \
-    video vicii viciisc raster \
-    sid resid \
-    drive drive/iec drive/iec/c64exp drive/iec128dcr drive/ieee drive/iecieee drive/tcbm \
-    iecbus serial tape tapeport joyport \
-    core core/rtc diskimage vdrive datasette imagecontents fileio \
-    parallel userport rs232drv monitor vdc printerdrv \
-    fsdevice gfxoutputdrv samplerdrv diag hvsc lib/md5 lib/libzmbv \
-    arch/shared \
-    -maxdepth 1 -name "*.c" -o -name "*.cc" -o -name "*.m" 2>/dev/null | \
+# Collect all VICE source files, excluding things that won't compile standalone
+VICE_SRCS=$(cd "$VICE_SRC/src" && find . \( -name "*.c" -o -name "*.cc" -o -name "*.m" \) | \
     grep -v \
-        -e "main\.c$" \
+        -e "arch/sdl/" -e "arch/gtk3/" \
+        -e "/main\.c$" \
         -e "c64cpusc\.c" -e "c64memsc\.c" -e "c64scmodel\.c" -e "c64sc-stubs\.c" \
-        -e "vsid" \
-        -e "c64dtv" \
-        -e "resid-dtv" \
+        -e "vsid" -e "c64dtv" -e "resid-dtv" \
         -e "dynlib-unix\.c" -e "rs232-unix-dev\.c" \
         -e "archdep_get_vice_datadir\.c" \
         -e "uistatusbar\.c" \
         -e "pngdrv\.c" \
+        -e "6510core\.c\|6510dtvcore\|65816core\|65c02core\|aciacore\|digimaxcore\|piacore\|z80core" \
+        -e "maincpu\.c\|mainc64cpu\|main65816cpu\|mainviccpu\|render-common\.c" \
+        -e "c1541\.c\|c1541-stubs\|linenoise" \
         -e "soundalsa\|soundbeos\|soundbsp\|sounddx\|soundpulse\|soundsdl\|soundsun\|soundwmm\|soundflac\|soundvorbis\|soundmp3\|soundmovie\|lamelib" \
-        -e "arch/sdl\|arch/gtk3" \
+        -e "rs232-win32\|dynlib-win32\|rawnetarch_win32\|archdep_is_windows\|socket-win32\|hardsid-win32\|catweasel.*win32\|parsid-win32" \
+        -e "console_unix\|console_none\|console\.c" \
+        -e "filter\.cc$" \
     | sort)
+
+# Collect all VICE source subdirectories as -I flags
+VICE_INCLUDES=$(find "$VICE_SRC/src" -type d | sed 's|^|-I|' | tr '\n' ' ')
 
 COMMON_FLAGS="\
     -DMACOSX=1 \
@@ -69,24 +65,14 @@ COMMON_FLAGS="\
     -DHAVE_AUDIO_UNIT=1 \
     -DHAVE_CONFIG_H=1 \
     -DHAVE_REALDEVICE=1 \
-    -I$VICE_SRC/src \
-    -I$VICE_SRC/src/c64 \
-    -I$VICE_SRC/src/vicii \
-    -I$VICE_SRC/src/sid \
-    -I$VICE_SRC/src/drive \
-    -I$VICE_SRC/src/iecbus \
-    -I$VICE_SRC/src/video \
-    -I$VICE_SRC/src/core \
-    -I$VICE_SRC/src/raster \
-    -I$VICE_SRC/src/arch/shared \
-    -I$VICE_SRC/src/arch/headless \
-    -I$VICE_SRC/src/lib \
-    -I$REPO_ROOT/apps/cbm-foundation-app \
+    $VICE_INCLUDES \
+    -I$REPO_ROOT/app \
     -Wno-unused-parameter \
     -Wno-sign-compare \
     -Wno-missing-field-initializers \
     -Wno-deprecated-declarations \
     -Wno-implicit-function-declaration \
+    -Wno-macro-redefined \
     -fPIC"
 
 compile_arch() {
