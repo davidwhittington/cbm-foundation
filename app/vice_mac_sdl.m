@@ -609,11 +609,11 @@ int  userport_wic64_cmdline_options_init(void)  { return 0; }
 
 /* ── Arch stubs (Phase 5 / future phases) ───────────────────────────────── */
 
-/* Global state variables normally defined in main.c are now provided by VICE's
- * src/main.c (included in Phase 2 build): console_mode, help_requested,
- * default_settings_requested, video_disabled_mode. */
+/* console_mode, help_requested, default_settings_requested, video_disabled_mode
+ * are defined in vice/src/main.c which is compiled into libvice.dylib.
+ * dlopen with RTLD_GLOBAL makes them available in the flat namespace. */
 
-/* Variables defined in c128/c128cpu.c (not compiled for x64-only Phase 1-5) */
+/* Variables defined in c128/c128cpu.c (not compiled for x64-only build) */
 int maincpu_stretch = 0;
 unsigned long c128cpu_memory_refresh_clk = 0;
 

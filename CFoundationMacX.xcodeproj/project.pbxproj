@@ -1,0 +1,747 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0487B9655A466315832F4F70 /* vice_mac_joystick.m in Sources */ = {isa = PBXBuildFile; fileRef = CFDFA7F4B994BE398E7E1FAA /* vice_mac_joystick.m */; };
+		0C4B76477C5BF2309F904FEC /* SwiftUIPanelCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AE8DD8C42B99E546DBC552 /* SwiftUIPanelCoordinator.swift */; };
+		11F9CAD27FCAB0D0DB7A6845 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99FCA3F354A8573DD927807E /* AVFoundation.framework */; };
+		124DEC3033EB92E68ABCA8BD /* CBMLibraryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38253C937E896C66D22DD8D6 /* CBMLibraryManager.swift */; };
+		135E2563C5A398B29BB850C4 /* vice_net2iec.c in Sources */ = {isa = PBXBuildFile; fileRef = E783717E5B1EC7F9D7765CBA /* vice_net2iec.c */; };
+		1D243E105C69272CB14F9480 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = AB0D53C9FAA04A02BC231778 /* Shaders.metal */; };
+		20FC484288CA6E99211FF691 /* vice_mac_kbd.c in Sources */ = {isa = PBXBuildFile; fileRef = 5CD2A720E986D35BFC346E67 /* vice_mac_kbd.c */; };
+		21002CB66D8A15D05AD0E3C9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 583D453BA931F3E17733674F /* main.m */; };
+		211FAC0DB51C1645F6AAF04F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99FCA3F354A8573DD927807E /* AVFoundation.framework */; };
+		21233372FBF4464B560FE2F3 /* vice_mac_joystick.m in Sources */ = {isa = PBXBuildFile; fileRef = CFDFA7F4B994BE398E7E1FAA /* vice_mac_joystick.m */; };
+		21DB7219F3D16884AB7B0699 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0973A6371D3D1FDDD68C7B6A /* CoreVideo.framework */; };
+		23B85A56AB10828BE4AF2E4F /* CBMLibraryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38253C937E896C66D22DD8D6 /* CBMLibraryManager.swift */; };
+		2C9DAE906C66B8CAD78D3AAA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 583D453BA931F3E17733674F /* main.m */; };
+		30C423DB99442505B59B9912 /* vice_mac_sdl.m in Sources */ = {isa = PBXBuildFile; fileRef = A644B142BA78866BBAC2B43A /* vice_mac_sdl.m */; };
+		33E7AEE095936994B5A4C8E6 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCAB826D4E2C9446C221A8F8 /* Metal.framework */; };
+		3ECCF856409D1C9389794264 /* VICEStatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFB454FA956523C470B9A5A /* VICEStatusBar.swift */; };
+		43637B5F41978C3E9367B6CE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 58D98850745B991D23110998 /* AppDelegate.m */; };
+		4816551E601DF0FA54760984 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 233B7863ABB8299D11A8D0EE /* GameController.framework */; };
+		492B698D0639C51177FED660 /* netiec.c in Sources */ = {isa = PBXBuildFile; fileRef = D9C06986BE9207E92DBE03A5 /* netiec.c */; };
+		4FFC60C56A6A9C94181D1AB2 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D072037676866BC1B00C0CD /* AppKit.framework */; };
+		553FFF0298DE5DA9ED0C143D /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78B72E38BC4E5856D5A88E63 /* AudioUnit.framework */; };
+		570E8C666765D16DFD8358F1 /* vice_net2iec.c in Sources */ = {isa = PBXBuildFile; fileRef = E783717E5B1EC7F9D7765CBA /* vice_net2iec.c */; };
+		5FF1A19EC82CA7010A2912CD /* VICEStatusBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 3190D0C3EA6E01EEB853D52F /* VICEStatusBridge.m */; };
+		66DA1A0DB93FF4C0CD58A0B9 /* PreferenceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D91434A0A99492A5354F704 /* PreferenceModel.swift */; };
+		6F8FF3C4A67C1D0FF82BE16C /* MediaManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF9E5CB529E5053585B8B42 /* MediaManagerView.swift */; };
+		7118F3475D5731896426AE64 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23BB86F7AD73CFF6AB614FED /* CoreAudio.framework */; };
+		76DAC9DA4F15F1426AC5F639 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78B72E38BC4E5856D5A88E63 /* AudioUnit.framework */; };
+		77D3EC78D099999D2D7D172F /* PhysDrvManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 95D5B5539FCBD6C52E2CA51B /* PhysDrvManager.m */; };
+		795C5F75906B24E76D2AC393 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5CC0B08BC694AB137FB135C /* MetalKit.framework */; };
+		7ACD225DFB81B7BB1684627A /* CFoundationApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB623CAC711FA1C4CAC6120 /* CFoundationApp.swift */; };
+		8559B5DA380A756DE5C648B6 /* VICEEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 56F4692AAA629F4951BF798C /* VICEEngine.m */; };
+		8D61A21F584C64D2D3903259 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 58D98850745B991D23110998 /* AppDelegate.m */; };
+		8D8929BE038DF834A6E4F901 /* VICEMetalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AF3F1AF1A230FAC1DEF9A81 /* VICEMetalView.m */; };
+		91F9B32F99C6105DF0873955 /* VICEDisplayManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A79804B927495AF18BBFD750 /* VICEDisplayManager.m */; };
+		91FDE9490000DEC432F12A40 /* VICEDisplayManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A79804B927495AF18BBFD750 /* VICEDisplayManager.m */; };
+		946C44429F35CD871777F723 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5CC0B08BC694AB137FB135C /* MetalKit.framework */; };
+		953CA057706678293319EF3E /* vice_mac_sdl.m in Sources */ = {isa = PBXBuildFile; fileRef = A644B142BA78866BBAC2B43A /* vice_mac_sdl.m */; };
+		9B184D826337DD2FA1F1A9C3 /* netiec.c in Sources */ = {isa = PBXBuildFile; fileRef = D9C06986BE9207E92DBE03A5 /* netiec.c */; };
+		9C39F4ACE305147FF5E5205D /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = AB0D53C9FAA04A02BC231778 /* Shaders.metal */; };
+		9F0EF0CFE2761B0F96C28BF8 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D072037676866BC1B00C0CD /* AppKit.framework */; };
+		A111E29CFDDAADBF29362A13 /* MachineSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A203333DFFCCE22C541BEEE6 /* MachineSelector.swift */; };
+		A6B6788A4686139D724DC4D9 /* PreferenceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D91434A0A99492A5354F704 /* PreferenceModel.swift */; };
+		ACF13DBD9DE6C5A80AF635C1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2293D767D419A33BE9B1EB69 /* Foundation.framework */; };
+		B1DEF1EB11AC09EF70B632E7 /* MachineSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A203333DFFCCE22C541BEEE6 /* MachineSelector.swift */; };
+		B38369A6AEF9E36C9B9D0D18 /* MediaManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF9E5CB529E5053585B8B42 /* MediaManagerView.swift */; };
+		B7E14DF91AB724C75A8D4A7A /* CBMSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAC2C6E5F8E26B5F275993D /* CBMSetupView.swift */; };
+		BC6D8175094B7ED1AC3736E6 /* CBMSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CAC2C6E5F8E26B5F275993D /* CBMSetupView.swift */; };
+		BC98C277B7A1BC8D9A57B43B /* VICEStatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFB454FA956523C470B9A5A /* VICEStatusBar.swift */; };
+		BEA54B04F3E416C493341CAB /* Net2IECManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A049BABBF692F9077A21D29F /* Net2IECManager.m */; };
+		BF5EBBCEDC10BE7E727680BE /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23BB86F7AD73CFF6AB614FED /* CoreAudio.framework */; };
+		C07F7CF4F52B486924560BFE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2293D767D419A33BE9B1EB69 /* Foundation.framework */; };
+		C255E8DD45B7C96B6D82D6FD /* VICEMetalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AF3F1AF1A230FAC1DEF9A81 /* VICEMetalView.m */; };
+		CCC6770F8A68CAF6DC6327DE /* VICEEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 56F4692AAA629F4951BF798C /* VICEEngine.m */; };
+		CE997F575D390E86C952E059 /* CFoundationApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB623CAC711FA1C4CAC6120 /* CFoundationApp.swift */; };
+		D1A0848DEE03085BAB807799 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16A214EFFAE907178893C572 /* AudioToolbox.framework */; };
+		DB1DFA3976801C93006A14E6 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0973A6371D3D1FDDD68C7B6A /* CoreVideo.framework */; };
+		DC68FD49EC723474C3990221 /* VICEStatusBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 3190D0C3EA6E01EEB853D52F /* VICEStatusBridge.m */; };
+		DCA303B6052B766502304E87 /* SwiftUIPanelCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6AE8DD8C42B99E546DBC552 /* SwiftUIPanelCoordinator.swift */; };
+		DD1E7F1A108077D99A9EAF7B /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16A214EFFAE907178893C572 /* AudioToolbox.framework */; };
+		E2F710FA50D1B1C0E2281806 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCAB826D4E2C9446C221A8F8 /* Metal.framework */; };
+		E87DE92611FEB4CDDE8D0FC9 /* PhysDrvManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 95D5B5539FCBD6C52E2CA51B /* PhysDrvManager.m */; };
+		E9464A262E1B45384421234E /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 233B7863ABB8299D11A8D0EE /* GameController.framework */; };
+		ED8E38B04A32870172C1615F /* vice_mac_kbd.c in Sources */ = {isa = PBXBuildFile; fileRef = 5CD2A720E986D35BFC346E67 /* vice_mac_kbd.c */; };
+		EF1974134907647C6413780E /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13797C6045BFE0135663854F /* PreferencesView.swift */; };
+		FBC7290A4301E1A4A7443902 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13797C6045BFE0135663854F /* PreferencesView.swift */; };
+		FE71C4DD0F57A2786BFC43A3 /* Net2IECManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A049BABBF692F9077A21D29F /* Net2IECManager.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0973A6371D3D1FDDD68C7B6A /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		0CAC2C6E5F8E26B5F275993D /* CBMSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBMSetupView.swift; sourceTree = "<group>"; };
+		0D072037676866BC1B00C0CD /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		136119F946E686CA5016E140 /* CFoundationMacX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CFoundationMacX.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13797C6045BFE0135663854F /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
+		16A214EFFAE907178893C572 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		2293D767D419A33BE9B1EB69 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		233B7863ABB8299D11A8D0EE /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
+		23BB86F7AD73CFF6AB614FED /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		24FA2BFEF4021923B15A3A78 /* vice_mac_joystick.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vice_mac_joystick.h; sourceTree = "<group>"; };
+		26F8CB01A48C9F6D53726829 /* CFoundationMacX-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CFoundationMacX-Bridging-Header.h"; sourceTree = "<group>"; };
+		27099937317729F0A3BCC9D2 /* videoarch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = videoarch.h; sourceTree = "<group>"; };
+		3190D0C3EA6E01EEB853D52F /* VICEStatusBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VICEStatusBridge.m; sourceTree = "<group>"; };
+		38253C937E896C66D22DD8D6 /* CBMLibraryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBMLibraryManager.swift; sourceTree = "<group>"; };
+		3BFB454FA956523C470B9A5A /* VICEStatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VICEStatusBar.swift; sourceTree = "<group>"; };
+		3CF6959311042C90C4DCDBF2 /* archdep.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = archdep.h; sourceTree = "<group>"; };
+		405546D99299BE7AC7C2FC3D /* VICEMetalView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VICEMetalView.h; sourceTree = "<group>"; };
+		46C20B6482A6E604AC2AB594 /* resid-config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "resid-config.h"; sourceTree = "<group>"; };
+		4A97B4060D08C0A76FCDE9BE /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		56F4692AAA629F4951BF798C /* VICEEngine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VICEEngine.m; sourceTree = "<group>"; };
+		5792565183B2B0776E29F3CF /* vice_config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vice_config.h; sourceTree = "<group>"; };
+		583D453BA931F3E17733674F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		58D98850745B991D23110998 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		5CD2A720E986D35BFC346E67 /* vice_mac_kbd.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = vice_mac_kbd.c; sourceTree = "<group>"; };
+		6CBE4EE0840E2F1EAA85C2B2 /* vice_net2iec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vice_net2iec.h; sourceTree = "<group>"; };
+		702D291822AE0427ED7A7112 /* Net2IECManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Net2IECManager.h; sourceTree = "<group>"; };
+		78B72E38BC4E5856D5A88E63 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
+		80231955BAB102B5E6675B0C /* vice_mac_sdl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vice_mac_sdl.h; sourceTree = "<group>"; };
+		95D5B5539FCBD6C52E2CA51B /* PhysDrvManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhysDrvManager.m; sourceTree = "<group>"; };
+		99FCA3F354A8573DD927807E /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		9AF3F1AF1A230FAC1DEF9A81 /* VICEMetalView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VICEMetalView.m; sourceTree = "<group>"; };
+		9D91434A0A99492A5354F704 /* PreferenceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceModel.swift; sourceTree = "<group>"; };
+		9FB623CAC711FA1C4CAC6120 /* CFoundationApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CFoundationApp.swift; sourceTree = "<group>"; };
+		A049BABBF692F9077A21D29F /* Net2IECManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Net2IECManager.m; sourceTree = "<group>"; };
+		A203333DFFCCE22C541BEEE6 /* MachineSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MachineSelector.swift; sourceTree = "<group>"; };
+		A644B142BA78866BBAC2B43A /* vice_mac_sdl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = vice_mac_sdl.m; sourceTree = "<group>"; };
+		A79804B927495AF18BBFD750 /* VICEDisplayManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VICEDisplayManager.m; sourceTree = "<group>"; };
+		A805FC06D699F32D70747752 /* netiec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = netiec.h; sourceTree = "<group>"; };
+		AB0D53C9FAA04A02BC231778 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		B041043F78467ABB8615264E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		B6AE8DD8C42B99E546DBC552 /* SwiftUIPanelCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIPanelCoordinator.swift; sourceTree = "<group>"; };
+		C35C03A52FE2434509D2E1FB /* PhysDrvManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhysDrvManager.h; sourceTree = "<group>"; };
+		CDD255A24B173F59F40AF334 /* vice_mac_kbd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vice_mac_kbd.h; sourceTree = "<group>"; };
+		CFDFA7F4B994BE398E7E1FAA /* vice_mac_joystick.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = vice_mac_joystick.m; sourceTree = "<group>"; };
+		D795BEDA85ABB4D64FDC2FC2 /* VICEStatusBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VICEStatusBridge.h; sourceTree = "<group>"; };
+		D9C06986BE9207E92DBE03A5 /* netiec.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = netiec.c; sourceTree = "<group>"; };
+		DB49B7FAF3B2D18BEAC5D1AF /* VICEEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VICEEngine.h; sourceTree = "<group>"; };
+		DF301FB1D7F5EA0C69526DA3 /* CFoundationC64SC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CFoundationC64SC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0872773C5E2DF9DB44F02CD /* VICEDisplayManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VICEDisplayManager.h; sourceTree = "<group>"; };
+		E5CC0B08BC694AB137FB135C /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
+		E783717E5B1EC7F9D7765CBA /* vice_net2iec.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = vice_net2iec.c; sourceTree = "<group>"; };
+		EAF9E5CB529E5053585B8B42 /* MediaManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaManagerView.swift; sourceTree = "<group>"; };
+		FCAB826D4E2C9446C221A8F8 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1A6C0B8D709AE84D04DFA163 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				795C5F75906B24E76D2AC393 /* MetalKit.framework in Frameworks */,
+				33E7AEE095936994B5A4C8E6 /* Metal.framework in Frameworks */,
+				4816551E601DF0FA54760984 /* GameController.framework in Frameworks */,
+				211FAC0DB51C1645F6AAF04F /* AVFoundation.framework in Frameworks */,
+				BF5EBBCEDC10BE7E727680BE /* CoreAudio.framework in Frameworks */,
+				76DAC9DA4F15F1426AC5F639 /* AudioUnit.framework in Frameworks */,
+				DD1E7F1A108077D99A9EAF7B /* AudioToolbox.framework in Frameworks */,
+				21DB7219F3D16884AB7B0699 /* CoreVideo.framework in Frameworks */,
+				9F0EF0CFE2761B0F96C28BF8 /* AppKit.framework in Frameworks */,
+				ACF13DBD9DE6C5A80AF635C1 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B64D61C3FB1E12E62F6D324E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				946C44429F35CD871777F723 /* MetalKit.framework in Frameworks */,
+				E2F710FA50D1B1C0E2281806 /* Metal.framework in Frameworks */,
+				E9464A262E1B45384421234E /* GameController.framework in Frameworks */,
+				11F9CAD27FCAB0D0DB7A6845 /* AVFoundation.framework in Frameworks */,
+				7118F3475D5731896426AE64 /* CoreAudio.framework in Frameworks */,
+				553FFF0298DE5DA9ED0C143D /* AudioUnit.framework in Frameworks */,
+				D1A0848DEE03085BAB807799 /* AudioToolbox.framework in Frameworks */,
+				DB1DFA3976801C93006A14E6 /* CoreVideo.framework in Frameworks */,
+				4FFC60C56A6A9C94181D1AB2 /* AppKit.framework in Frameworks */,
+				C07F7CF4F52B486924560BFE /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5E1CA7C15F6C200CC6ADE113 /* cbm-foundation-app */ = {
+			isa = PBXGroup;
+			children = (
+				38253C937E896C66D22DD8D6 /* CBMLibraryManager.swift */,
+				0CAC2C6E5F8E26B5F275993D /* CBMSetupView.swift */,
+			);
+			name = "cbm-foundation-app";
+			path = "apps/cbm-foundation-app";
+			sourceTree = "<group>";
+		};
+		62EEAFE1ECB24308D31A2BBD = {
+			isa = PBXGroup;
+			children = (
+				5E1CA7C15F6C200CC6ADE113 /* cbm-foundation-app */,
+				EF88DF8589934FDBC89F0931 /* cfoundation-app */,
+				DBFD30AAA55104CE816C9225 /* src */,
+				C4DCE9B87B19ED28AA5CDFE8 /* Frameworks */,
+				B299845389F89BC48DB44FEE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B299845389F89BC48DB44FEE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DF301FB1D7F5EA0C69526DA3 /* CFoundationC64SC.app */,
+				136119F946E686CA5016E140 /* CFoundationMacX.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C4DCE9B87B19ED28AA5CDFE8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0D072037676866BC1B00C0CD /* AppKit.framework */,
+				16A214EFFAE907178893C572 /* AudioToolbox.framework */,
+				78B72E38BC4E5856D5A88E63 /* AudioUnit.framework */,
+				99FCA3F354A8573DD927807E /* AVFoundation.framework */,
+				23BB86F7AD73CFF6AB614FED /* CoreAudio.framework */,
+				0973A6371D3D1FDDD68C7B6A /* CoreVideo.framework */,
+				2293D767D419A33BE9B1EB69 /* Foundation.framework */,
+				233B7863ABB8299D11A8D0EE /* GameController.framework */,
+				FCAB826D4E2C9446C221A8F8 /* Metal.framework */,
+				E5CC0B08BC694AB137FB135C /* MetalKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		DBFD30AAA55104CE816C9225 /* src */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = src;
+			path = "vice/vice-3.9/src";
+			sourceTree = "<group>";
+		};
+		EF88DF8589934FDBC89F0931 /* cfoundation-app */ = {
+			isa = PBXGroup;
+			children = (
+				B041043F78467ABB8615264E /* AppDelegate.h */,
+				58D98850745B991D23110998 /* AppDelegate.m */,
+				3CF6959311042C90C4DCDBF2 /* archdep.h */,
+				9FB623CAC711FA1C4CAC6120 /* CFoundationApp.swift */,
+				26F8CB01A48C9F6D53726829 /* CFoundationMacX-Bridging-Header.h */,
+				4A97B4060D08C0A76FCDE9BE /* config.h */,
+				A203333DFFCCE22C541BEEE6 /* MachineSelector.swift */,
+				583D453BA931F3E17733674F /* main.m */,
+				EAF9E5CB529E5053585B8B42 /* MediaManagerView.swift */,
+				702D291822AE0427ED7A7112 /* Net2IECManager.h */,
+				A049BABBF692F9077A21D29F /* Net2IECManager.m */,
+				D9C06986BE9207E92DBE03A5 /* netiec.c */,
+				A805FC06D699F32D70747752 /* netiec.h */,
+				C35C03A52FE2434509D2E1FB /* PhysDrvManager.h */,
+				95D5B5539FCBD6C52E2CA51B /* PhysDrvManager.m */,
+				9D91434A0A99492A5354F704 /* PreferenceModel.swift */,
+				13797C6045BFE0135663854F /* PreferencesView.swift */,
+				46C20B6482A6E604AC2AB594 /* resid-config.h */,
+				AB0D53C9FAA04A02BC231778 /* Shaders.metal */,
+				B6AE8DD8C42B99E546DBC552 /* SwiftUIPanelCoordinator.swift */,
+				5792565183B2B0776E29F3CF /* vice_config.h */,
+				24FA2BFEF4021923B15A3A78 /* vice_mac_joystick.h */,
+				CFDFA7F4B994BE398E7E1FAA /* vice_mac_joystick.m */,
+				5CD2A720E986D35BFC346E67 /* vice_mac_kbd.c */,
+				CDD255A24B173F59F40AF334 /* vice_mac_kbd.h */,
+				80231955BAB102B5E6675B0C /* vice_mac_sdl.h */,
+				A644B142BA78866BBAC2B43A /* vice_mac_sdl.m */,
+				E783717E5B1EC7F9D7765CBA /* vice_net2iec.c */,
+				6CBE4EE0840E2F1EAA85C2B2 /* vice_net2iec.h */,
+				E0872773C5E2DF9DB44F02CD /* VICEDisplayManager.h */,
+				A79804B927495AF18BBFD750 /* VICEDisplayManager.m */,
+				DB49B7FAF3B2D18BEAC5D1AF /* VICEEngine.h */,
+				56F4692AAA629F4951BF798C /* VICEEngine.m */,
+				405546D99299BE7AC7C2FC3D /* VICEMetalView.h */,
+				9AF3F1AF1A230FAC1DEF9A81 /* VICEMetalView.m */,
+				3BFB454FA956523C470B9A5A /* VICEStatusBar.swift */,
+				D795BEDA85ABB4D64FDC2FC2 /* VICEStatusBridge.h */,
+				3190D0C3EA6E01EEB853D52F /* VICEStatusBridge.m */,
+				27099937317729F0A3BCC9D2 /* videoarch.h */,
+			);
+			name = "cfoundation-app";
+			path = "apps/cfoundation-app";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		770115D636BD93B0C2E3575F /* CFoundationC64SC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 92C2217B5EBE018CA0F35683 /* Build configuration list for PBXNativeTarget "CFoundationC64SC" */;
+			buildPhases = (
+				39D6521AB6BD4A0B6DEAD3F5 /* Check for libvice.dylib */,
+				838F06FCE8A854CF051503C8 /* Sources */,
+				B64D61C3FB1E12E62F6D324E /* Frameworks */,
+				3ABD2A6D4327078348D4004F /* Copy VICE data files */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CFoundationC64SC;
+			packageProductDependencies = (
+			);
+			productName = CFoundationC64SC;
+			productReference = DF301FB1D7F5EA0C69526DA3 /* CFoundationC64SC.app */;
+			productType = "com.apple.product-type.application";
+		};
+		99798CEB089545A61B4E04F4 /* CFoundationMacX */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2971A8146D1203A5A4E73608 /* Build configuration list for PBXNativeTarget "CFoundationMacX" */;
+			buildPhases = (
+				7FF584199CD795AB2B04880C /* Check for libvice.dylib */,
+				18EBFDC777F320515D0C4AB4 /* Sources */,
+				1A6C0B8D709AE84D04DFA163 /* Frameworks */,
+				AE1BAA22684D158AEEA4FD51 /* Copy VICE data files */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CFoundationMacX;
+			packageProductDependencies = (
+			);
+			productName = CFoundationMacX;
+			productReference = 136119F946E686CA5016E140 /* CFoundationMacX.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CE886051D2B62CC3BAB330A7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					770115D636BD93B0C2E3575F = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					99798CEB089545A61B4E04F4 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = CF700C2DB029B6161C6B2918 /* Build configuration list for PBXProject "CFoundationMacX" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 62EEAFE1ECB24308D31A2BBD;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				770115D636BD93B0C2E3575F /* CFoundationC64SC */,
+				99798CEB089545A61B4E04F4 /* CFoundationMacX */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		39D6521AB6BD4A0B6DEAD3F5 /* Check for libvice.dylib */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Check for libvice.dylib";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "APP_SUPPORT=\"$HOME/Library/Application Support/cbm-foundation/libvice.dylib\"\nDIST=\"$SRCROOT/dist/libvice.dylib\"\nif [ ! -f \"$APP_SUPPORT\" ] && [ ! -f \"$DIST\" ]; then\n  echo \"warning: libvice.dylib not found. Run 'scripts/build_vice_dylib.sh' to build it, or launch the app to download it automatically.\"\nfi\n";
+		};
+		3ABD2A6D4327078348D4004F /* Copy VICE data files */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy VICE data files";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/vice-data",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "DEST=\"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/vice-data\"\nmkdir -p \"$DEST\"\nrsync -a --delete \"${SRCROOT}/vice/vice-3.9/data/\" \"$DEST/\"\n";
+		};
+		7FF584199CD795AB2B04880C /* Check for libvice.dylib */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Check for libvice.dylib";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "APP_SUPPORT=\"$HOME/Library/Application Support/cbm-foundation/libvice.dylib\"\nDIST=\"$SRCROOT/dist/libvice.dylib\"\nif [ ! -f \"$APP_SUPPORT\" ] && [ ! -f \"$DIST\" ]; then\n  echo \"warning: libvice.dylib not found. Run 'scripts/build_vice_dylib.sh' to build it, or launch the app to download it automatically.\"\nfi\n";
+		};
+		AE1BAA22684D158AEEA4FD51 /* Copy VICE data files */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy VICE data files";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/vice-data",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "DEST=\"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/vice-data\"\nmkdir -p \"$DEST\"\nrsync -a --delete \"${SRCROOT}/vice/vice-3.9/data/\" \"$DEST/\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		18EBFDC777F320515D0C4AB4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43637B5F41978C3E9367B6CE /* AppDelegate.m in Sources */,
+				124DEC3033EB92E68ABCA8BD /* CBMLibraryManager.swift in Sources */,
+				BC6D8175094B7ED1AC3736E6 /* CBMSetupView.swift in Sources */,
+				7ACD225DFB81B7BB1684627A /* CFoundationApp.swift in Sources */,
+				A111E29CFDDAADBF29362A13 /* MachineSelector.swift in Sources */,
+				B38369A6AEF9E36C9B9D0D18 /* MediaManagerView.swift in Sources */,
+				BEA54B04F3E416C493341CAB /* Net2IECManager.m in Sources */,
+				77D3EC78D099999D2D7D172F /* PhysDrvManager.m in Sources */,
+				A6B6788A4686139D724DC4D9 /* PreferenceModel.swift in Sources */,
+				EF1974134907647C6413780E /* PreferencesView.swift in Sources */,
+				9C39F4ACE305147FF5E5205D /* Shaders.metal in Sources */,
+				DCA303B6052B766502304E87 /* SwiftUIPanelCoordinator.swift in Sources */,
+				91F9B32F99C6105DF0873955 /* VICEDisplayManager.m in Sources */,
+				8559B5DA380A756DE5C648B6 /* VICEEngine.m in Sources */,
+				8D8929BE038DF834A6E4F901 /* VICEMetalView.m in Sources */,
+				3ECCF856409D1C9389794264 /* VICEStatusBar.swift in Sources */,
+				5FF1A19EC82CA7010A2912CD /* VICEStatusBridge.m in Sources */,
+				21002CB66D8A15D05AD0E3C9 /* main.m in Sources */,
+				492B698D0639C51177FED660 /* netiec.c in Sources */,
+				0487B9655A466315832F4F70 /* vice_mac_joystick.m in Sources */,
+				ED8E38B04A32870172C1615F /* vice_mac_kbd.c in Sources */,
+				953CA057706678293319EF3E /* vice_mac_sdl.m in Sources */,
+				135E2563C5A398B29BB850C4 /* vice_net2iec.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		838F06FCE8A854CF051503C8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D61A21F584C64D2D3903259 /* AppDelegate.m in Sources */,
+				23B85A56AB10828BE4AF2E4F /* CBMLibraryManager.swift in Sources */,
+				B7E14DF91AB724C75A8D4A7A /* CBMSetupView.swift in Sources */,
+				CE997F575D390E86C952E059 /* CFoundationApp.swift in Sources */,
+				B1DEF1EB11AC09EF70B632E7 /* MachineSelector.swift in Sources */,
+				6F8FF3C4A67C1D0FF82BE16C /* MediaManagerView.swift in Sources */,
+				FE71C4DD0F57A2786BFC43A3 /* Net2IECManager.m in Sources */,
+				E87DE92611FEB4CDDE8D0FC9 /* PhysDrvManager.m in Sources */,
+				66DA1A0DB93FF4C0CD58A0B9 /* PreferenceModel.swift in Sources */,
+				FBC7290A4301E1A4A7443902 /* PreferencesView.swift in Sources */,
+				1D243E105C69272CB14F9480 /* Shaders.metal in Sources */,
+				0C4B76477C5BF2309F904FEC /* SwiftUIPanelCoordinator.swift in Sources */,
+				91FDE9490000DEC432F12A40 /* VICEDisplayManager.m in Sources */,
+				CCC6770F8A68CAF6DC6327DE /* VICEEngine.m in Sources */,
+				C255E8DD45B7C96B6D82D6FD /* VICEMetalView.m in Sources */,
+				BC98C277B7A1BC8D9A57B43B /* VICEStatusBar.swift in Sources */,
+				DC68FD49EC723474C3990221 /* VICEStatusBridge.m in Sources */,
+				2C9DAE906C66B8CAD78D3AAA /* main.m in Sources */,
+				9B184D826337DD2FA1F1A9C3 /* netiec.c in Sources */,
+				21233372FBF4464B560FE2F3 /* vice_mac_joystick.m in Sources */,
+				20FC484288CA6E99211FF691 /* vice_mac_kbd.c in Sources */,
+				30C423DB99442505B59B9912 /* vice_mac_sdl.m in Sources */,
+				570E8C666765D16DFD8358F1 /* vice_net2iec.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3060B77AD67935986782BC8D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "apps/cfoundation-app/CFoundationMacX.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = "apps/cfoundation-app/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cfoundation.CFoundationC64SC;
+				PRODUCT_NAME = CFoundationC64SC;
+				SDKROOT = macosx;
+				SWIFT_MODULE_NAME = CFoundationMacX;
+				SWIFT_OBJC_BRIDGING_HEADER = "apps/cfoundation-app/CFoundationMacX-Bridging-Header.h";
+			};
+			name = Release;
+		};
+		5129DF66E1057EBD7256010E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "MACOSX=1 UNIX_COMPILE=1 USE_VICE_THREAD=1 VICE_ARCHTYPE_NATIVE_MACOS=1 HAVE_AUDIO_UNIT=1 HAVE_CONFIG_H=1";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/apps/cfoundation-app $(SRCROOT)/vice/vice-3.9/src $(SRCROOT)/vice/vice-3.9/src/c64 $(SRCROOT)/vice/vice-3.9/src/c64/cart $(SRCROOT)/vice/vice-3.9/src/c64dtv $(SRCROOT)/vice/vice-3.9/src/c128 $(SRCROOT)/vice/vice-3.9/src/c128/cart $(SRCROOT)/vice/vice-3.9/src/cbm2 $(SRCROOT)/vice/vice-3.9/src/cbm2/cart $(SRCROOT)/vice/vice-3.9/src/pet $(SRCROOT)/vice/vice-3.9/src/plus4 $(SRCROOT)/vice/vice-3.9/src/plus4/cart $(SRCROOT)/vice/vice-3.9/src/vic20 $(SRCROOT)/vice/vice-3.9/src/scpu64 $(SRCROOT)/vice/vice-3.9/src/vicii $(SRCROOT)/vice/vice-3.9/src/viciisc $(SRCROOT)/vice/vice-3.9/src/vdc $(SRCROOT)/vice/vice-3.9/src/crtc $(SRCROOT)/vice/vice-3.9/src/sid $(SRCROOT)/vice/vice-3.9/src/resid $(SRCROOT)/vice/vice-3.9/src/resid-dtv $(SRCROOT)/vice/vice-3.9/src/drive $(SRCROOT)/vice/vice-3.9/src/drive/iec $(SRCROOT)/vice/vice-3.9/src/drive/iec/c64exp $(SRCROOT)/vice/vice-3.9/src/drive/iec128dcr $(SRCROOT)/vice/vice-3.9/src/drive/ieee $(SRCROOT)/vice/vice-3.9/src/drive/tcbm $(SRCROOT)/vice/vice-3.9/src/iecbus $(SRCROOT)/vice/vice-3.9/src/serial $(SRCROOT)/vice/vice-3.9/src/tape $(SRCROOT)/vice/vice-3.9/src/tapeport $(SRCROOT)/vice/vice-3.9/src/datasette $(SRCROOT)/vice/vice-3.9/src/video $(SRCROOT)/vice/vice-3.9/src/raster $(SRCROOT)/vice/vice-3.9/src/core $(SRCROOT)/vice/vice-3.9/src/core/rtc $(SRCROOT)/vice/vice-3.9/src/cartridge $(SRCROOT)/vice/vice-3.9/src/joyport $(SRCROOT)/vice/vice-3.9/src/monitor $(SRCROOT)/vice/vice-3.9/src/parallel $(SRCROOT)/vice/vice-3.9/src/userport $(SRCROOT)/vice/vice-3.9/src/printerdrv $(SRCROOT)/vice/vice-3.9/src/rs232drv $(SRCROOT)/vice/vice-3.9/src/samplerdrv $(SRCROOT)/vice/vice-3.9/src/diskimage $(SRCROOT)/vice/vice-3.9/src/vdrive $(SRCROOT)/vice/vice-3.9/src/fileio $(SRCROOT)/vice/vice-3.9/src/fsdevice $(SRCROOT)/vice/vice-3.9/src/imagecontents $(SRCROOT)/vice/vice-3.9/src/diag $(SRCROOT)/vice/vice-3.9/src/gfxoutputdrv $(SRCROOT)/vice/vice-3.9/src/lib/p64 $(SRCROOT)/vice/vice-3.9/src/lib/md5 $(SRCROOT)/vice/vice-3.9/src/lib/libzmbv $(SRCROOT)/vice/vice-3.9/src/hvsc $(SRCROOT)/vice/vice-3.9/src/arch/shared $(SRCROOT)/vice/vice-3.9/src/arch/shared/hotkeys $(SRCROOT)/vice/vice-3.9/src/arch/shared/sounddrv $(SRCROOT)/vice/vice-3.9/src/arch/shared/hwsiddrv $(SRCROOT)/vice/vice-3.9/src/arch/shared/socketdrv $(SRCROOT)/vice/vice-3.9/src/lib $(SRCROOT)/vice/vice-3.9/src/arch/headless";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				OTHER_CFLAGS = "-Wno-unused-parameter -Wno-sign-compare -Wno-missing-field-initializers -Wno-deprecated-declarations -Wno-implicit-function-declaration";
+				OTHER_CPLUSPLUSFLAGS = "-include $(SRCROOT)/apps/cfoundation-app/config.h -Wno-unused-parameter -Wno-sign-compare -Wno-deprecated-declarations -Wno-deprecated-declarations";
+				OTHER_LDFLAGS = "-undefined dynamic_lookup";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		61F2E29781F4AA3F5C965F6C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "apps/cfoundation-app/CFoundationMacX.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = "apps/cfoundation-app/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cfoundation.CFoundationMacX;
+				PRODUCT_NAME = CFoundationMacX;
+				SDKROOT = macosx;
+				SWIFT_MODULE_NAME = CFoundationMacX;
+				SWIFT_OBJC_BRIDGING_HEADER = "apps/cfoundation-app/CFoundationMacX-Bridging-Header.h";
+			};
+			name = Debug;
+		};
+		7697D9009C9EA2F7B2C6C09C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "MACOSX=1 UNIX_COMPILE=1 USE_VICE_THREAD=1 VICE_ARCHTYPE_NATIVE_MACOS=1 HAVE_AUDIO_UNIT=1 HAVE_CONFIG_H=1";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/apps/cfoundation-app $(SRCROOT)/vice/vice-3.9/src $(SRCROOT)/vice/vice-3.9/src/c64 $(SRCROOT)/vice/vice-3.9/src/c64/cart $(SRCROOT)/vice/vice-3.9/src/c64dtv $(SRCROOT)/vice/vice-3.9/src/c128 $(SRCROOT)/vice/vice-3.9/src/c128/cart $(SRCROOT)/vice/vice-3.9/src/cbm2 $(SRCROOT)/vice/vice-3.9/src/cbm2/cart $(SRCROOT)/vice/vice-3.9/src/pet $(SRCROOT)/vice/vice-3.9/src/plus4 $(SRCROOT)/vice/vice-3.9/src/plus4/cart $(SRCROOT)/vice/vice-3.9/src/vic20 $(SRCROOT)/vice/vice-3.9/src/scpu64 $(SRCROOT)/vice/vice-3.9/src/vicii $(SRCROOT)/vice/vice-3.9/src/viciisc $(SRCROOT)/vice/vice-3.9/src/vdc $(SRCROOT)/vice/vice-3.9/src/crtc $(SRCROOT)/vice/vice-3.9/src/sid $(SRCROOT)/vice/vice-3.9/src/resid $(SRCROOT)/vice/vice-3.9/src/resid-dtv $(SRCROOT)/vice/vice-3.9/src/drive $(SRCROOT)/vice/vice-3.9/src/drive/iec $(SRCROOT)/vice/vice-3.9/src/drive/iec/c64exp $(SRCROOT)/vice/vice-3.9/src/drive/iec128dcr $(SRCROOT)/vice/vice-3.9/src/drive/ieee $(SRCROOT)/vice/vice-3.9/src/drive/tcbm $(SRCROOT)/vice/vice-3.9/src/iecbus $(SRCROOT)/vice/vice-3.9/src/serial $(SRCROOT)/vice/vice-3.9/src/tape $(SRCROOT)/vice/vice-3.9/src/tapeport $(SRCROOT)/vice/vice-3.9/src/datasette $(SRCROOT)/vice/vice-3.9/src/video $(SRCROOT)/vice/vice-3.9/src/raster $(SRCROOT)/vice/vice-3.9/src/core $(SRCROOT)/vice/vice-3.9/src/core/rtc $(SRCROOT)/vice/vice-3.9/src/cartridge $(SRCROOT)/vice/vice-3.9/src/joyport $(SRCROOT)/vice/vice-3.9/src/monitor $(SRCROOT)/vice/vice-3.9/src/parallel $(SRCROOT)/vice/vice-3.9/src/userport $(SRCROOT)/vice/vice-3.9/src/printerdrv $(SRCROOT)/vice/vice-3.9/src/rs232drv $(SRCROOT)/vice/vice-3.9/src/samplerdrv $(SRCROOT)/vice/vice-3.9/src/diskimage $(SRCROOT)/vice/vice-3.9/src/vdrive $(SRCROOT)/vice/vice-3.9/src/fileio $(SRCROOT)/vice/vice-3.9/src/fsdevice $(SRCROOT)/vice/vice-3.9/src/imagecontents $(SRCROOT)/vice/vice-3.9/src/diag $(SRCROOT)/vice/vice-3.9/src/gfxoutputdrv $(SRCROOT)/vice/vice-3.9/src/lib/p64 $(SRCROOT)/vice/vice-3.9/src/lib/md5 $(SRCROOT)/vice/vice-3.9/src/lib/libzmbv $(SRCROOT)/vice/vice-3.9/src/hvsc $(SRCROOT)/vice/vice-3.9/src/arch/shared $(SRCROOT)/vice/vice-3.9/src/arch/shared/hotkeys $(SRCROOT)/vice/vice-3.9/src/arch/shared/sounddrv $(SRCROOT)/vice/vice-3.9/src/arch/shared/hwsiddrv $(SRCROOT)/vice/vice-3.9/src/arch/shared/socketdrv $(SRCROOT)/vice/vice-3.9/src/lib $(SRCROOT)/vice/vice-3.9/src/arch/headless";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "-Wno-unused-parameter -Wno-sign-compare -Wno-missing-field-initializers -Wno-deprecated-declarations -Wno-implicit-function-declaration";
+				OTHER_CPLUSPLUSFLAGS = "-include $(SRCROOT)/apps/cfoundation-app/config.h -Wno-unused-parameter -Wno-sign-compare -Wno-deprecated-declarations -Wno-deprecated-declarations";
+				OTHER_LDFLAGS = "-undefined dynamic_lookup";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		8364AB069B76F80B4BEEDD1C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "apps/cfoundation-app/CFoundationMacX.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = "apps/cfoundation-app/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cfoundation.CFoundationC64SC;
+				PRODUCT_NAME = CFoundationC64SC;
+				SDKROOT = macosx;
+				SWIFT_MODULE_NAME = CFoundationMacX;
+				SWIFT_OBJC_BRIDGING_HEADER = "apps/cfoundation-app/CFoundationMacX-Bridging-Header.h";
+			};
+			name = Debug;
+		};
+		8925D03F28C1B8CC498677D0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "apps/cfoundation-app/CFoundationMacX.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = "apps/cfoundation-app/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cfoundation.CFoundationMacX;
+				PRODUCT_NAME = CFoundationMacX;
+				SDKROOT = macosx;
+				SWIFT_MODULE_NAME = CFoundationMacX;
+				SWIFT_OBJC_BRIDGING_HEADER = "apps/cfoundation-app/CFoundationMacX-Bridging-Header.h";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2971A8146D1203A5A4E73608 /* Build configuration list for PBXNativeTarget "CFoundationMacX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				61F2E29781F4AA3F5C965F6C /* Debug */,
+				8925D03F28C1B8CC498677D0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		92C2217B5EBE018CA0F35683 /* Build configuration list for PBXNativeTarget "CFoundationC64SC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8364AB069B76F80B4BEEDD1C /* Debug */,
+				3060B77AD67935986782BC8D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		CF700C2DB029B6161C6B2918 /* Build configuration list for PBXProject "CFoundationMacX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7697D9009C9EA2F7B2C6C09C /* Debug */,
+				5129DF66E1057EBD7256010E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CE886051D2B62CC3BAB330A7 /* Project object */;
+}

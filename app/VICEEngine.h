@@ -31,6 +31,10 @@ NS_SWIFT_NAME(VICEEngine)
 
 + (instancetype)sharedEngine NS_SWIFT_NAME(shared());
 
+/** Load libvice.dylib from Application Support or app bundle via dlopen.
+ *  Must be called before startWithMachine:. Returns NO if not found. */
++ (BOOL)loadVICELibrary:(NSError *_Nullable *_Nullable)error;
+
 /** The machine class this binary was compiled for (read from VICE's machine_class global). */
 + (VICEMachineModel)compiledMachineClass NS_SWIFT_NAME(compiledMachineClass());
 

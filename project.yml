@@ -79,8 +79,11 @@ settings:
       $(SRCROOT)/vice/vice-3.9/src/hvsc
       $(SRCROOT)/vice/vice-3.9/src/arch/shared
       $(SRCROOT)/vice/vice-3.9/src/arch/shared/hotkeys
+      $(SRCROOT)/vice/vice-3.9/src/arch/shared/socketdrv
       $(SRCROOT)/vice/vice-3.9/src/arch/shared/sounddrv
       $(SRCROOT)/vice/vice-3.9/src/arch/shared/hwsiddrv
+      $(SRCROOT)/vice/vice-3.9/src/arch/shared/hotkeys
+      $(SRCROOT)/vice/vice-3.9/src/arch/shared/socketdrv
       $(SRCROOT)/vice/vice-3.9/src/arch/shared/socketdrv
       $(SRCROOT)/vice/vice-3.9/src/lib
       $(SRCROOT)/vice/vice-3.9/src/arch/headless

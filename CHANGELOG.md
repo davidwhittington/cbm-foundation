@@ -7,6 +7,32 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added — C64 emulator running (2026-03-20)
+
+**Milestone:** C64 emulation confirmed working end-to-end. VICE 3.9 C core running
+inside cbm-foundation.app via Metal rendering pipeline. App downloads libvice.dylib
+on first launch, verifies SHA256, and starts the emulator automatically.
+
+Key fixes to reach this milestone:
+- `libvice.dylib` build script: correct include path ordering (app/ first for config.h,
+  sid/ before resid/ to prevent sid.h collision), socketdrv/hotkeys subdirs added,
+  C64 machine only (excludes C128/VIC20/PET/Plus4/SCPU64 to prevent duplicate symbols),
+  arch/headless excluded except archdep/c64ui/console/mousedrv/uimon stubs,
+  `main.c` included in dylib so `main_program()` and `console_mode` globals are present,
+  `infocontrib.h` stub generated (normally autoconf output), `siddefs.h` stub generated
+  (normally autoconf output), `resid.cc` fixed with correct `-include` path
+- `VICEEngine.m`: safe NSArray construction for candidate paths (no nil literals),
+  `dlopen(RTLD_LAZY|RTLD_GLOBAL)` so VICE symbols populate the flat namespace,
+  `machine_class` accessed via `dlsym` to avoid dyld flat namespace binding at launch
+- `AppDelegate.m`: `dispatch_async` for library check + setup, `applicationShouldTerminate
+  AfterLastWindowClosed` returns NO (VICE manages its own window lifecycle)
+- `vice_mac_sdl.m`: `bool console_mode/help_requested/default_settings_requested/
+  video_disabled_mode` defined here since main.c is now in dylib (not app)
+
+**Result:** BUILD SUCCEEDED → C64 screen visible with VICE 3.9 running natively.
+
+---
+
 ### Added — Phase 9: dynamic VICE library + in-app download (2026-03-18)
 
 **Goal:** Decouple the VICE emulation core from the app binary. `libvice.dylib` is

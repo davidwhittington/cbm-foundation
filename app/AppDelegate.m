@@ -89,9 +89,8 @@
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
-    // Don't quit when setup window closes — we open the emulator window right after.
-    // Once VICE is running, the emulator window closing should quit.
-    return _viceRunning;
+    // Never auto-quit based on window count — VICE manages its own window lifecycle.
+    return NO;
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification {
