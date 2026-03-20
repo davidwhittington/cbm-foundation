@@ -1,8 +1,7 @@
 .DS_Store
 *.log
 node_modules/
+build/
 dist/
 .env
-vice/vice-3.9/build/
-dist/libvice.dylib
 docs/
