@@ -180,7 +180,8 @@ int ui_init_finalize(void) {
         [NSEvent addLocalMonitorForEventsMatchingMask:
              (NSEventMaskKeyDown | NSEventMaskKeyUp | NSEventMaskFlagsChanged)
              handler:^NSEvent *(NSEvent *event) {
-            if (!gEmulatorWindow || !gEmulatorWindow.isKeyWindow) {
+            NSWindow *win = gEmulatorWindow; /* load once; safe if nil */
+            if (!win || !win.isKeyWindow) {
                 return event; /* pass through to other windows */
             }
             if (event.type == NSEventTypeKeyDown) {
@@ -518,13 +519,14 @@ int vice_mac_ui_init(void) {
                                        styleMask:style
                                          backing:NSBackingStoreBuffered
                                            defer:NO];
-        window.title            = @"c=foundation";
-        window.minSize          = NSMakeSize(384, 288);
-        /* Lock window to 4:3 so resizing stays authentic */
+        window.title              = @"c=foundation";
+        window.minSize            = NSMakeSize(384, 288);
         window.contentAspectRatio = NSMakeSize(4, 3);
-        /* Black background so fullscreen/letterbox bars match the emulator surface */
-        window.backgroundColor  = [NSColor blackColor];
+        window.backgroundColor    = [NSColor blackColor];
         window.collectionBehavior = NSWindowCollectionBehaviorFullScreenPrimary;
+        /* NSWindow releases itself on close by default even with ARC strong refs.
+         * The NSEvent monitor keeps gEmulatorWindow alive — prevent PAC crash. */
+        window.releasedWhenClosed = NO;
 
         /* Create VICEMetalView sized to the C64 native frame */
         Vice_MetalViewCreate((__bridge void *)window,
