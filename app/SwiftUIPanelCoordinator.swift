@@ -110,6 +110,31 @@ final class SwiftUIPanelCoordinator: NSObject {
         mediaManagerWindow?.makeKeyAndOrderFront(nil)
     }
 
+    // MARK: - Main window layout
+
+    /// Replace the Metal-only window content with the full SwiftUI layout
+    /// (emulator canvas + sidebar + toolbar). Called by AppDelegate after VICE starts.
+    @objc func installMainWindowLayout() {
+        guard let window = [NSApp.keyWindow, NSApp.mainWindow]
+                .compactMap({ $0 })
+                .first(where: { $0.title == "c=foundation" })
+                ?? NSApp.windows.first(where: { $0.title == "c=foundation" })
+        else { return }
+
+        let hostView = NSHostingView(rootView: CBMContentView())
+        hostView.autoresizingMask = [.width, .height]
+        window.contentView = hostView
+
+        // Sidebar changes overall aspect — remove 4:3 lock, set new min size
+        window.contentAspectRatio = NSSize(width: 0, height: 0)
+        window.minSize = NSSize(width: 768 + 280, height: 576)
+        window.setContentSize(NSSize(width: 768 + 280, height: 576))
+        window.center()
+
+        // Tell CBMContentView VICE is ready
+        CBMWindowBridge.notifyVICEReady()
+    }
+
     // MARK: - Setup (first-run / library download)
 
     /// Returns an NSViewController hosting CBMSetupView.

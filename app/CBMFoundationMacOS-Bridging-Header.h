@@ -6,6 +6,7 @@
  */
 
 #import "VICEEngine.h"
+#import "CBMWindowBridge.h"
 #import "VICEMetalView.h"
 #import "VICEDisplayManager.h"
 #import "Net2IECManager.h"

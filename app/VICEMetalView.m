@@ -257,6 +257,9 @@ typedef struct {
 
 static VICEMetalView *gMetalView = nil;
 
+// Accessor for CBMWindowBridge
+NSView *Vice_GetMetalView(void) { return gMetalView; }
+
 void Vice_MetalViewCreate(void *nsWindow, int width, int height) {
     void (^create)(void) = ^{
         NSWindow *window = (__bridge NSWindow *)nsWindow;

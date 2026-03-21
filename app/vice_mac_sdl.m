@@ -544,6 +544,10 @@ int vice_mac_ui_init(void) {
         /* Enforce scanlines-off at startup — overrides any stale shader state */
         Vice_MetalSetScanlines(0);
 
+        /* SwiftUI layout (emulator + sidebar + toolbar) is installed by
+         * AppDelegate after main_program() returns, via SwiftUIPanelCoordinator.
+         * At that point gMetalView is set and can be embedded via NSViewRepresentable. */
+
         [window center];
         [window makeKeyAndOrderFront:nil];
         [NSApp activateIgnoringOtherApps:YES];
