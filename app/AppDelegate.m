@@ -52,9 +52,12 @@
     /* Apply persisted preferences to VICE core and Metal renderer.
      * Called after main_program() so all VICE resources are registered. */
     _viceRunning = YES;
-    /* Install SwiftUI layout (sidebar + toolbar) now that Metal view exists */
-    [SwiftUIPanelCoordinator.shared installMainWindowLayout];
     [SwiftUIPanelCoordinator.shared applyStartupPreferences];
+    /* Install SwiftUI layout after the run loop returns — installing synchronously
+     * blocks the main thread during VICE's first mainlock_yield, causing an assert. */
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [SwiftUIPanelCoordinator.shared installMainWindowLayout];
+    });
 }
 
 - (void)showSetupSheetWithCompletion:(void (^)(void))completion {
