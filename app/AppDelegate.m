@@ -94,8 +94,9 @@
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
-    // Never auto-quit based on window count — VICE manages its own window lifecycle.
-    return NO;
+    // Quit when the emulator window closes — leaving VICE running headless
+    // causes mainlock_yield_begin asserts when the window teardown triggers resets.
+    return _viceRunning;
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification {
