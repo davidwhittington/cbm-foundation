@@ -98,13 +98,15 @@ typedef struct {
 
     // MTKView settings
     self.framebufferOnly     = YES;
-    // VICE palette values are sRGB-encoded (gamma ~2.2, display-ready).
-    // Using BGRA8Unorm_sRGB tells Metal these values ARE sRGB — the compositor
-    // passes them through without applying additional gamma, matching a CRT/TV display.
-    self.colorPixelFormat    = MTLPixelFormatBGRA8Unorm_sRGB;
+    self.colorPixelFormat    = MTLPixelFormatBGRA8Unorm;
     self.clearColor          = MTLClearColorMake(0, 0, 0, 1);
     self.enableSetNeedsDisplay = NO;  // driven by VICE frame delivery
     self.delegate            = self;
+
+    // Tag layer as sRGB so display compositor treats our already-gamma-encoded
+    // VICE palette bytes as sRGB without applying additional gamma.
+    CAMetalLayer *metalLayer = (CAMetalLayer *)self.layer;
+    metalLayer.colorspace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
 
     [self _buildPipeline];
     [self _allocFragmentParamsBuffer];
