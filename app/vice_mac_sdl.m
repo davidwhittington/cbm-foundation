@@ -522,6 +522,8 @@ int vice_mac_ui_init(void) {
         window.minSize          = NSMakeSize(384, 288);
         /* Lock window to 4:3 so resizing stays authentic */
         window.contentAspectRatio = NSMakeSize(4, 3);
+        /* Black background so fullscreen/letterbox bars match the emulator surface */
+        window.backgroundColor  = [NSColor blackColor];
         window.collectionBehavior = NSWindowCollectionBehaviorFullScreenPrimary;
 
         /* Create VICEMetalView sized to the C64 native frame */
