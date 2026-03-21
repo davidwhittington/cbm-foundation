@@ -202,6 +202,13 @@ int ui_init_finalize(void) {
         }];
     });
 
+    /* Disable VICE's internal PAL scanline shader — default is 750 (25% row darkening).
+     * We provide our own scanline toggle in the Metal shader; VICE's effect is redundant
+     * and surprising to users who expect a clean display by default.
+     * 1000 = no darkening (fully bright alternate rows = no visible scanlines). */
+    resources_set_int("VICIIPALScanLineShade", 1000);
+    resources_set_int("VDCPALScanLineShade",   1000);
+
     log_message(vice_mac_log, "c=foundation macOS UI initialised.");
     return 0;
 }
