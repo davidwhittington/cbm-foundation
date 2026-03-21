@@ -94,13 +94,23 @@
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
-    // Quit when the emulator window closes — leaving VICE running headless
-    // causes mainlock_yield_begin asserts when the window teardown triggers resets.
     return _viceRunning;
 }
 
-- (void)applicationWillTerminate:(NSNotification *)notification {
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
+    if (!_viceRunning) return NSTerminateNow;
+
+    // Stop VICE *before* AppKit tears down windows.
+    // If we let the window teardown happen first while VICE is running,
+    // SwiftUI/AppKit cleanup triggers VICE code on the main thread that
+    // calls mainlock_yield_begin — which asserts it must run on the VICE thread.
     [[VICEEngine sharedEngine] stop];
+    _viceRunning = NO;
+    return NSTerminateNow;
+}
+
+- (void)applicationWillTerminate:(NSNotification *)notification {
+    // VICE is already stopped by applicationShouldTerminate — no-op.
 }
 
 // MARK: - NSMenu bar
