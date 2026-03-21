@@ -141,6 +141,7 @@ VICE_SRCS=$(cd "$S" && find . \( -name "*.c" -o -name "*.cc" -o -name "*.m" \) |
         -e "arch/headless/vsyncarch\.c" \
         -e "arch/headless/video\.c" \
         -e "arch/headless/ui\.c" \
+        -e "arch/headless/kbd\.c" \
         -e "arch/headless/c128ui\|arch/headless/cbm2ui\|arch/headless/cbm5x0ui" \
         -e "arch/headless/petui\|arch/headless/plus4ui\|arch/headless/vic20ui" \
         -e "arch/headless/scpu64ui\|arch/headless/vsidui\|arch/headless/c64dtvui" \

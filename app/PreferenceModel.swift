@@ -92,6 +92,9 @@ private enum PrefKey {
     static let netIECEnabled   = "NetIECEnabled"
     static let netIECHost      = "NetIECHost"
     static let netIECPort      = "NetIECPort"
+    static let fujiNetEnabled  = "FujiNetEnabled"
+    static let fujiNetHost     = "FujiNetHost"
+    static let fujiNetPort     = "FujiNetPort"
     static let physDriveEnabled = "PhysDriveEnabled"
     static let physDriveUnit    = "PhysDriveUnit"
     static let joySwapPorts     = "JoySwapPorts"
@@ -123,10 +126,15 @@ final class VICEPreferenceModel {
     var trueDriveEmulation: Bool = true
     var virtualDevices: Bool     = true
 
-    // NetIEC / FujiNet-PC
+    // net2iec — Meatloaf TCP bridge (IEC units 9–11)
     var netIECEnabled: Bool  = false
-    var netIECHost: String   = "localhost"
-    var netIECPort: Int      = 6400
+    var netIECHost: String   = "meatloaf.local"
+    var netIECPort: Int      = 1541
+
+    // NetIEC — FujiNet-PC UDP bridge (IEC units 8–11)
+    var fujiNetEnabled: Bool = false
+    var fujiNetHost: String  = "localhost"
+    var fujiNetPort: Int     = 6400
 
     // Physical drive (opencbm / ZoomFloppy / XUM1541)
     var physDriveEnabled: Bool = false
@@ -153,8 +161,11 @@ final class VICEPreferenceModel {
         trueDriveEmulation  = d.object(forKey: PrefKey.trueDriveEmu) == nil ? true : d.bool(forKey: PrefKey.trueDriveEmu)
         virtualDevices      = d.object(forKey: PrefKey.virtualDevices) == nil ? true : d.bool(forKey: PrefKey.virtualDevices)
         netIECEnabled       = d.bool(forKey: PrefKey.netIECEnabled)
-        netIECHost          = d.string(forKey: PrefKey.netIECHost) ?? "localhost"
-        netIECPort          = d.integer(forKey: PrefKey.netIECPort) != 0 ? d.integer(forKey: PrefKey.netIECPort) : 6400
+        netIECHost          = d.string(forKey: PrefKey.netIECHost) ?? "meatloaf.local"
+        netIECPort          = d.integer(forKey: PrefKey.netIECPort) != 0 ? d.integer(forKey: PrefKey.netIECPort) : 1541
+        fujiNetEnabled      = d.bool(forKey: PrefKey.fujiNetEnabled)
+        fujiNetHost         = d.string(forKey: PrefKey.fujiNetHost) ?? "localhost"
+        fujiNetPort         = d.integer(forKey: PrefKey.fujiNetPort) != 0 ? d.integer(forKey: PrefKey.fujiNetPort) : 6400
         physDriveEnabled    = d.bool(forKey: PrefKey.physDriveEnabled)
         physDriveUnit       = d.integer(forKey: PrefKey.physDriveUnit) != 0 ? d.integer(forKey: PrefKey.physDriveUnit) : 8
         joySwapPorts        = d.bool(forKey: PrefKey.joySwapPorts)
@@ -178,9 +189,84 @@ final class VICEPreferenceModel {
         d.set(netIECEnabled,                 forKey: PrefKey.netIECEnabled)
         d.set(netIECHost,                    forKey: PrefKey.netIECHost)
         d.set(netIECPort,                    forKey: PrefKey.netIECPort)
+        d.set(fujiNetEnabled,                forKey: PrefKey.fujiNetEnabled)
+        d.set(fujiNetHost,                   forKey: PrefKey.fujiNetHost)
+        d.set(fujiNetPort,                   forKey: PrefKey.fujiNetPort)
         d.set(physDriveEnabled,              forKey: PrefKey.physDriveEnabled)
         d.set(physDriveUnit,                 forKey: PrefKey.physDriveUnit)
         d.set(joySwapPorts,                  forKey: PrefKey.joySwapPorts)
+    }
+
+    // MARK: - Profile Management
+
+    struct Profile: Codable, Identifiable {
+        var id: UUID = UUID()
+        var name: String
+        var created: Date = Date()
+        var scanlinesEnabled: Bool
+        var crtCurvatureEnabled: Bool
+        var brightness: Double
+        var saturation: Double
+        var contrast: Double
+        var linearFilterEnabled: Bool
+        var sidModel: Int
+        var trueDriveEmulation: Bool
+        var virtualDevices: Bool
+        var audioVolume: Double
+    }
+
+    private static var profilesURL: URL {
+        FileManager.default
+            .urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("cbm-foundation/profiles.json")
+    }
+
+    func saveProfile(name: String) {
+        var profiles = loadProfiles()
+        let p = Profile(
+            name: name,
+            scanlinesEnabled: scanlinesEnabled,
+            crtCurvatureEnabled: crtCurvatureEnabled,
+            brightness: brightness,
+            saturation: saturation,
+            contrast: contrast,
+            linearFilterEnabled: linearFilterEnabled,
+            sidModel: sidModel.rawValue,
+            trueDriveEmulation: trueDriveEmulation,
+            virtualDevices: virtualDevices,
+            audioVolume: audioVolume
+        )
+        profiles.removeAll { $0.name == name }
+        profiles.insert(p, at: 0)
+        try? JSONEncoder().encode(profiles).write(to: Self.profilesURL)
+    }
+
+    func loadProfiles() -> [Profile] {
+        guard let data = try? Data(contentsOf: Self.profilesURL),
+              let profiles = try? JSONDecoder().decode([Profile].self, from: data)
+        else { return [] }
+        return profiles
+    }
+
+    func applyProfile(_ profile: Profile) {
+        scanlinesEnabled    = profile.scanlinesEnabled
+        crtCurvatureEnabled = profile.crtCurvatureEnabled
+        brightness          = profile.brightness
+        saturation          = profile.saturation
+        contrast            = profile.contrast
+        linearFilterEnabled = profile.linearFilterEnabled
+        sidModel            = SIDModel(rawValue: profile.sidModel) ?? .mos6581
+        trueDriveEmulation  = profile.trueDriveEmulation
+        virtualDevices      = profile.virtualDevices
+        audioVolume         = profile.audioVolume
+        applyMetalSettings()
+        save()
+    }
+
+    func deleteProfile(_ profile: Profile) {
+        var profiles = loadProfiles()
+        profiles.removeAll { $0.id == profile.id }
+        try? JSONEncoder().encode(profiles).write(to: Self.profilesURL)
     }
 
     /// Apply current preference values to the running VICE core via VICEEngine.
