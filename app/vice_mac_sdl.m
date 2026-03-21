@@ -521,6 +521,9 @@ int vice_mac_ui_init(void) {
         /* Wire VICEDisplayManager → VICEMetalView */
         Vice_MetalViewSetDisplayManager();
 
+        /* Enforce scanlines-off at startup — overrides any stale shader state */
+        Vice_MetalSetScanlines(0);
+
         [window center];
         [window makeKeyAndOrderFront:nil];
         [NSApp activateIgnoringOtherApps:YES];
