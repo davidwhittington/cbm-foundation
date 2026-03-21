@@ -31,6 +31,8 @@ final class SwiftUIPanelCoordinator: NSObject {
     /// Called once from AppDelegate after the VICE thread is running.
     @objc func applyStartupPreferences() {
         prefsModel.load()
+        // Always start with scanlines off — user can toggle in Video prefs
+        prefsModel.scanlinesEnabled = false
         prefsModel.applyToVICECore()
         setupStatusBar()
     }

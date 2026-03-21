@@ -523,6 +523,7 @@ int vice_mac_ui_init(void) {
 
         [window center];
         [window makeKeyAndOrderFront:nil];
+        [NSApp activateIgnoringOtherApps:YES];
         gEmulatorWindow = window;
 
         /* Register with status bridge so SwiftUIPanelCoordinator can
