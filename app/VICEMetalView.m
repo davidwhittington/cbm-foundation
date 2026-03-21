@@ -103,6 +103,15 @@ typedef struct {
     self.enableSetNeedsDisplay = NO;  // driven by VICE frame delivery
     self.delegate            = self;
 
+    // Tag the CAMetalLayer as sRGB so the display compositor does not apply
+    // additional gamma to our already-gamma-encoded VICE palette pixels.
+    // Without this, macOS 14+ (extended linear P3 default) treats our sRGB
+    // values as linear light and double-gamma-corrects them, washing colours out.
+    if (@available(macOS 10.13, *)) {
+        CAMetalLayer *metalLayer = (CAMetalLayer *)self.layer;
+        metalLayer.colorspace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
+    }
+
     [self _buildPipeline];
     [self _allocFragmentParamsBuffer];
 }
