@@ -504,8 +504,9 @@ int vice_mac_ui_init(void) {
      * a safety net for any future call-path that might differ. */
 
     dispatch_block_t createWindow = ^{
-        /* 2× C64 native resolution as default window size */
-        NSRect frame = NSMakeRect(0, 0, 768, 544);
+        /* 4:3 aspect ratio at 2× scale — C64 pixels are non-square on real hardware
+         * (PAL TV is 4:3). 768×576 = exact 4:3. */
+        NSRect frame = NSMakeRect(0, 0, 768, 576);
         NSWindowStyleMask style =
             NSWindowStyleMaskTitled       |
             NSWindowStyleMaskClosable     |
@@ -518,7 +519,9 @@ int vice_mac_ui_init(void) {
                                          backing:NSBackingStoreBuffered
                                            defer:NO];
         window.title            = @"c=foundation";
-        window.minSize          = NSMakeSize(384, 272);
+        window.minSize          = NSMakeSize(384, 288);
+        /* Lock window to 4:3 so resizing stays authentic */
+        window.contentAspectRatio = NSMakeSize(4, 3);
         window.collectionBehavior = NSWindowCollectionBehaviorFullScreenPrimary;
 
         /* Create VICEMetalView sized to the C64 native frame */
