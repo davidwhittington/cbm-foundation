@@ -11,6 +11,7 @@
 // VICE C headers
 #include "main.h"
 #include "machine.h"
+#include "vsync.h"
 #include "mainlock.h"
 #include "attach.h"
 #include "autostart.h"
@@ -120,13 +121,22 @@
     _running = NO;
 }
 
+static void vice_reset_callback(void *param) {
+    /* Called on the VICE thread at next vsync — safe to call machine_trigger_reset here. */
+    int reset_mode = (int)(intptr_t)param;
+    machine_trigger_reset(reset_mode);
+}
+
 - (void)reset:(VICEResetMode)mode {
     if (!_running) return;
-    mainlock_obtain();
-    machine_trigger_reset(mode == VICEResetModeHard
-                          ? MACHINE_RESET_MODE_POWER_CYCLE
-                          : MACHINE_RESET_MODE_RESET_CPU);
-    mainlock_release();
+    /* Schedule the reset on the VICE thread via vsync_on_vsync_do.
+     * Calling machine_trigger_reset directly from the main thread (even with
+     * mainlock held) causes machine_powerup → sound_flush → mainlock_yield_begin
+     * which asserts it must run on the VICE thread. */
+    int reset_mode = (mode == VICEResetModeHard)
+        ? MACHINE_RESET_MODE_POWER_CYCLE
+        : MACHINE_RESET_MODE_RESET_CPU;
+    vsync_on_vsync_do(vice_reset_callback, (void *)(intptr_t)reset_mode);
 }
 
 // MARK: - Running State
