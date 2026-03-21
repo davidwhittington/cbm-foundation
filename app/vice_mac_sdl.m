@@ -213,8 +213,8 @@ int ui_init_finalize(void) {
     /* Boost VIC-II color contrast to match VICE GTK3's default visual output.
      * Raw VICE palette at 1000 (100%) looks flatter than CRT-emulated GTK3.
      * 1100 = 110% contrast, closer to what a real CRT display produces. */
-    resources_set_int("VICIIColorContrast",   1100);
-    resources_set_int("VICIIColorSaturation", 1100);
+    resources_set_int("VICIIColorContrast",   1000);
+    resources_set_int("VICIIColorSaturation", 1000);
 
     log_message(vice_mac_log, "c=foundation macOS UI initialised.");
     return 0;

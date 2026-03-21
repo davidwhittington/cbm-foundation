@@ -67,6 +67,12 @@ fragment float4 viceFragment(
 
     float4 color = tex.sample(nearestSampler, uv);
 
+    // VICE outputs sRGB-gamma-encoded palette values. The texture is BGRA8Unorm
+    // (linear read), so we decode sRGB → linear here to get physically correct
+    // light values before any colour processing.
+    // Approximate sRGB decode: linear = sRGB^2.2
+    color.rgb = pow(color.rgb, float3(2.2));
+
     // Scanline darkening: dim every odd pixel row
     if (p.scanlinesEnabled) {
         if (fmod(in.position.y, 2.0) < 1.0) {

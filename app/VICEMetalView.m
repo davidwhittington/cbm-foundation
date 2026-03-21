@@ -105,8 +105,12 @@ typedef struct {
 
     // Tag layer as sRGB so display compositor treats our already-gamma-encoded
     // VICE palette bytes as sRGB without applying additional gamma.
+    // Shader decodes sRGB → linear, so framebuffer contains linear light values.
+    // Tag layer as linearSRGB so the compositor knows: no additional gamma needed,
+    // just map from sRGB gamut to the display's native gamut.
     CAMetalLayer *metalLayer = (CAMetalLayer *)self.layer;
-    metalLayer.colorspace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
+    CGColorSpaceRef cs = CGColorSpaceCreateWithName(kCGColorSpaceLinearSRGB);
+    if (cs) { metalLayer.colorspace = cs; CGColorSpaceRelease(cs); }
 
     [self _buildPipeline];
     [self _allocFragmentParamsBuffer];
