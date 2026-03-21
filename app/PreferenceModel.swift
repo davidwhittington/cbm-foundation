@@ -272,13 +272,15 @@ final class VICEPreferenceModel {
     /// Apply current preference values to the running VICE core via VICEEngine.
     func applyToVICECore() {
         let engine = VICEEngine.shared()
-        engine.setResourceInt("WarpMode",             value: 0)
-        engine.setResourceInt("SidModel",             value: sidModel.rawValue)
-        engine.setResourceInt("DriveTrueEmulation",   value: trueDriveEmulation ? 1 : 0)
-        engine.setResourceInt("VirtualDevices",       value: virtualDevices ? 1 : 0)
-        engine.setResourceInt("Sound",                value: audioEnabled ? 1 : 0)
-        engine.setResourceInt("SoundVolume",          value: Int(audioVolume * 100))
+        // Safe at any time — no cold-reset callbacks:
+        engine.setResourceInt("WarpMode",   value: 0)
+        engine.setResourceInt("Sound",      value: audioEnabled ? 1 : 0)
+        engine.setResourceInt("SoundVolume", value: Int(audioVolume * 100))
         applyMetalSettings()
+        // NOTE: SidModel, DriveTrueEmulation, VirtualDevices trigger cold resets
+        // via resource callbacks. They must only be set from the VICE thread or via
+        // vsync_on_vsync_do. The onChange handlers in PreferencesView handle these
+        // when the user explicitly changes a setting. (#18)
         if netIECEnabled {
             engine.connectNet2IEC(toHost: netIECHost, port: netIECPort) { _, _ in }
         } else {
