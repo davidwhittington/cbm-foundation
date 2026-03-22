@@ -51,6 +51,7 @@ struct MachinePreferencesTab: View {
                         Text(m.displayName).tag(m)
                     }
                 }
+                .help("Select the Commodore machine to emulate. Changes take effect on next launch.")
                 Text("Machine changes take effect on next launch.")
                     .font(.caption).foregroundStyle(.secondary)
             }
@@ -72,7 +73,10 @@ struct VideoPreferencesTab: View {
                         Text(m.displayName).tag(m)
                     }
                 }
+                .help("Controls how the C64's 384×272 frame is scaled to fill the window.")
+
                 Toggle("Bilinear filtering", isOn: $model.linearFilterEnabled)
+                    .help("Smooths pixel edges when scaling. Off gives the sharp, authentic pixel look.")
                     .onChange(of: model.linearFilterEnabled) { _, v in
                         Vice_MetalSetLinearFilter(v ? 1 : 0)
                     }
@@ -80,10 +84,12 @@ struct VideoPreferencesTab: View {
 
             Section("CRT Effects") {
                 Toggle("Scanlines", isOn: $model.scanlinesEnabled)
+                    .help("Dims alternate rows to simulate the horizontal scan lines of a CRT television.")
                     .onChange(of: model.scanlinesEnabled) { _, v in
                         Vice_MetalSetScanlines(v ? 1 : 0)
                     }
                 Toggle("CRT curvature", isOn: $model.crtCurvatureEnabled)
+                    .help("Adds a subtle barrel distortion to simulate the curved glass of a CRT screen.")
                     .onChange(of: model.crtCurvatureEnabled) { _, v in
                         Vice_MetalSetCRTCurvature(v ? 1 : 0)
                     }
@@ -93,12 +99,17 @@ struct VideoPreferencesTab: View {
                 LiveSlider(label: "Brightness", value: $model.brightness, range: 0.5...1.5) { v in
                     Vice_MetalSetBrightness(v)
                 }
+                .help("Overall display brightness. 1.0 is the calibrated default.")
+
                 LiveSlider(label: "Saturation", value: $model.saturation, range: 0...2) { v in
                     Vice_MetalSetSaturation(v)
                 }
+                .help("Color intensity. Higher values produce richer, more vivid C64 colours.")
+
                 LiveSlider(label: "Contrast", value: $model.contrast, range: 0.5...1.5) { v in
                     Vice_MetalSetContrast(v)
                 }
+                .help("Range between darkest and brightest colours. 1.0 is the calibrated default.")
             }
         }
         .formStyle(.grouped).padding()
@@ -114,10 +125,12 @@ struct AudioPreferencesTab: View {
         Form {
             Section {
                 Toggle("Enable audio", isOn: $model.audioEnabled)
+                    .help("Master audio switch. Disabling silences the SID chip output completely.")
                     .onChange(of: model.audioEnabled) { _, v in
                         VICEEngine.shared().setResourceInt("Sound", value: v ? 1 : 0)
                     }
                 LabeledSlider("Volume", value: $model.audioVolume, range: 0...1)
+                    .help("SID output volume. Applies in addition to your system volume.")
                     .disabled(!model.audioEnabled)
                     .onChange(of: model.audioVolume) { _, v in
                         VICEEngine.shared().setResourceInt("SoundVolume", value: Int(v * 100))
@@ -129,6 +142,7 @@ struct AudioPreferencesTab: View {
                         Text(s.displayName).tag(s)
                     }
                 }
+                .help("Choose the SID chip revision. 6581 has the characteristic bass-heavy sound of early C64s. 8580 was used in later models with cleaner highs.")
                 .onChange(of: model.sidModel) { _, s in
                     VICEEngine.shared().setResourceInt("SidModel", value: s.rawValue)
                 }
@@ -150,12 +164,15 @@ struct DrivePreferencesTab: View {
         Form {
             Section("Drive emulation") {
                 Toggle("True drive emulation", isOn: $model.trueDriveEmulation)
+                    .help("Enables cycle-accurate 1541 drive emulation. Required for copy-protected titles and fastloaders. Significantly slower than virtual device mode.")
                     .onChange(of: model.trueDriveEmulation) { _, v in
                         VICEEngine.shared().setResourceInt("DriveTrueEmulation", value: v ? 1 : 0)
                     }
                 Text("Cycle-accurate 1541 behaviour. Required for some copy-protected titles.")
                     .font(.caption).foregroundStyle(.secondary)
+
                 Toggle("Virtual devices", isOn: $model.virtualDevices)
+                    .help("Fast virtual drive that bypasses true drive emulation. Incompatible with true drive emulation — only one should be active at a time.")
                     .onChange(of: model.virtualDevices) { _, v in
                         VICEEngine.shared().setResourceInt("VirtualDevices", value: v ? 1 : 0)
                     }
@@ -164,10 +181,13 @@ struct DrivePreferencesTab: View {
             }
             Section("Physical Drive (ZoomFloppy / XUM1541)") {
                 Toggle("Enable via opencbm", isOn: $model.physDriveEnabled)
+                    .help("Connect a real Commodore 1541/1571/1581 drive via a ZoomFloppy or XUM1541 USB adapter. Requires libopencbm.dylib.")
                 if model.physDriveEnabled {
                     Picker("IEC unit", selection: $model.physDriveUnit) {
                         ForEach(8...11, id: \.self) { Text("Unit \($0)").tag($0) }
-                    }.pickerStyle(.menu)
+                    }
+                    .pickerStyle(.menu)
+                    .help("IEC bus unit number the physical drive will respond to (8–11).")
                     LabeledContent("Status") {
                         Text(physDriveStatus).foregroundStyle(physDriveStatusColor)
                     }
@@ -211,6 +231,7 @@ struct InputPreferencesTab: View {
         Form {
             Section("Joystick") {
                 Toggle("Swap Joystick Ports (Port 1 ↔ Port 2)", isOn: $model.joySwapPorts)
+                    .help("Most C64 games use Port 2 for the main joystick. Enable this if your game expects Port 1.")
                     .onChange(of: model.joySwapPorts) { _, v in
                         vice_mac_joystick_set_port_swap(v ? 1 : 0)
                     }
@@ -236,9 +257,11 @@ struct InputPreferencesTab: View {
                 LabeledContent("Layout") {
                     Text("US Positional (gtk3_sym.vkm)").foregroundStyle(.secondary)
                 }
+                .help("The C64 keyboard layout in use. Hardware key positions map directly to C64 matrix positions.")
                 LabeledContent("Key mapping") {
                     Text("Hardware keycodes → C64 matrix").foregroundStyle(.secondary)
                 }
+                .help("Key events are translated from macOS hardware keycodes to the C64 keyboard matrix on every frame.")
             }
         }
         .formStyle(.grouped).padding()
@@ -264,15 +287,20 @@ struct NetworkPreferencesTab: View {
         Form {
             Section {
                 Toggle("Enable net2iec (Meatloaf)", isOn: $model.netIECEnabled)
+                    .help("Bridge the C64's IEC bus (drives 9–11) to a Meatloaf network drive server over TCP. Lets the emulated C64 load from network endpoints.")
                 if model.netIECEnabled {
                     LabeledContent("Host") {
                         TextField("meatloaf.local", text: $model.netIECHost)
                             .textFieldStyle(.roundedBorder).frame(maxWidth: 240)
                     }
+                    .help("Hostname or IP address of the Meatloaf server. mDNS names (e.g. meatloaf.local) work on the same network.")
+
                     LabeledContent("Port") {
                         TextField("1541", value: $model.netIECPort, format: .number)
                             .textFieldStyle(.roundedBorder).frame(maxWidth: 80)
                     }
+                    .help("TCP port the Meatloaf server is listening on. Default is 1541.")
+
                     LabeledContent("Status") {
                         HStack(spacing: 6) {
                             Circle().fill(net2iecStatusColor).frame(width: 8, height: 8)
@@ -282,8 +310,10 @@ struct NetworkPreferencesTab: View {
                     HStack {
                         Button(net2iecConnecting ? "Connecting…" : "Connect") { connectNet2IEC() }
                             .disabled(net2iecConnecting)
+                            .help("Attempt to connect to the Meatloaf server now.")
                         Spacer()
                         Button("Protocol Log…") { showDiagnostics = true }
+                            .help("Open the network protocol log to debug IEC bus traffic.")
                     }
                 }
             } header: {
@@ -295,15 +325,20 @@ struct NetworkPreferencesTab: View {
 
             Section {
                 Toggle("Enable FujiNet-PC (NetIEC)", isOn: $model.fujiNetEnabled)
+                    .help("Bridge the C64's IEC bus to a FujiNet-PC server over UDP. FujiNet-PC IEC support is in active development.")
                 if model.fujiNetEnabled {
                     LabeledContent("Host") {
                         TextField("localhost", text: $model.fujiNetHost)
                             .textFieldStyle(.roundedBorder).frame(maxWidth: 240)
                     }
+                    .help("Hostname or IP of the FujiNet-PC IEC server. Use localhost if running on the same machine.")
+
                     LabeledContent("Port") {
                         TextField("6400", value: $model.fujiNetPort, format: .number)
                             .textFieldStyle(.roundedBorder).frame(maxWidth: 80)
                     }
+                    .help("UDP port for the FujiNet-PC NetIEC server. Default is 6400.")
+
                     Text("FujiNet-PC IEC server (UDP, default port 6400). Drives 8–11.")
                         .font(.caption).foregroundStyle(.secondary)
                 }
@@ -387,8 +422,11 @@ struct NetworkDiagnosticsView: View {
                 Spacer()
                 Picker("Filter", selection: $filter) {
                     ForEach(DiagFilter.allCases, id: \.self) { Text($0.rawValue).tag($0) }
-                }.pickerStyle(.segmented).frame(maxWidth: 220)
+                }
+                .pickerStyle(.segmented).frame(maxWidth: 220)
+                .help("Filter log entries by category.")
                 Button("Clear") { lines = [] }
+                    .help("Clear all log entries.")
                 Button("Done") { dismiss() }
             }
             .padding()
@@ -420,9 +458,7 @@ struct NetworkDiagnosticsView: View {
         .onReceive(timer) { _ in pollLog() }
     }
 
-    private func pollLog() {
-        // Wire to VICE log bridge when available
-    }
+    private func pollLog() {}
 }
 
 // MARK: - Profiles
@@ -441,6 +477,7 @@ struct ProfilesPreferencesTab: View {
                     HStack {
                         TextField("Profile name", text: $newProfileName)
                             .textFieldStyle(.roundedBorder)
+                            .help("Enter a name for this profile.")
                         Button("Save") {
                             let name = newProfileName.trimmingCharacters(in: .whitespaces)
                             guard !name.isEmpty else { return }
@@ -450,7 +487,9 @@ struct ProfilesPreferencesTab: View {
                             showSaveField = false
                         }
                         .disabled(newProfileName.trimmingCharacters(in: .whitespaces).isEmpty)
+                        .help("Save the current video, audio, and drive settings under this name.")
                         Button("Cancel") { showSaveField = false; newProfileName = "" }
+                            .help("Discard and close the name field.")
                     }
                 } else {
                     Button {
@@ -458,6 +497,7 @@ struct ProfilesPreferencesTab: View {
                     } label: {
                         Label("Save current settings as profile…", systemImage: "plus.circle")
                     }
+                    .help("Snapshot the current video, audio, and drive settings into a named profile.")
                 }
             }
 
@@ -473,11 +513,14 @@ struct ProfilesPreferencesTab: View {
                             Spacer()
                             Button("Load") { model.applyProfile(profile) }
                                 .buttonStyle(.bordered)
+                                .help("Apply \"\(profile.name)\" — restores its video, audio, and drive settings immediately.")
                             Button(role: .destructive) {
                                 confirmDelete = profile
                             } label: {
                                 Image(systemName: "trash")
-                            }.buttonStyle(.borderless)
+                            }
+                            .buttonStyle(.borderless)
+                            .help("Delete the \"\(profile.name)\" profile. This cannot be undone.")
                         }
                     }
                 }
